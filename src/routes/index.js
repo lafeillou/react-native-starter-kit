@@ -1,15 +1,15 @@
 import React from 'react';
-import { Router, Stack, Scene } from 'react-native-router-flux';
+import { Stack, Scene } from 'react-native-router-flux';
 
 import LeafletMap from '../components/LeafletMap';
+import Login from '../components/Login';
+
 
 const Index = (
-  <Router hideNavBar>
-    <Stack key="root" hideNavBar>
-      <Scene initial key="home" component={LeafletMap} />
-    </Stack>
-  </Router>
+  <Stack key="login" hideNavBar>
+    <Scene key="home" component={LeafletMap} />
+    <Scene key="login" component={Login} />
+  </Stack>
 );
-
 
 export default Index;

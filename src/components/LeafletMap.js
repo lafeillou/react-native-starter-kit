@@ -61,7 +61,7 @@ const LeafLetMap = () => (
   <View style={styles.container}>
     <WebView
       style={{ backgroundColor: '#0c132c' }}
-      source={{ uri: 'http://10.90.132.78:8080/index.html' }}
+      source={{ uri: 'http://192.168.3.31:8080/index.html' }}
     />
     {/* 菜单按钮 */}
     <View style={[styles.btn, styles.pos1]}>
