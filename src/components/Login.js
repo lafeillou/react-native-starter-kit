@@ -33,6 +33,7 @@ export default class extends React.Component {
       offset: new Animated.Value(deviceHeight),
     };
     this.closeModal = this.closeModal.bind(this);
+    // this._afterAnimation = this._afterAnimation.bind(this);
   }
 
   componentDidMount() {
@@ -47,10 +48,17 @@ export default class extends React.Component {
     const { offset } = this.state;
     Animated.timing(offset, {
       duration: 300,
-      toValue: -deviceHeight,
+      toValue: deviceHeight,
       // start中的参数是动画结束后的回调
-    }).start(Actions.home());
+    }).start(Actions.reset('home'));
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  // _afterAnimation() {
+  //   setTimeout(() => {
+  //     Actions.reset('home');
+  //   }, 0);
+  // }
 
   render() {
     const { offset } = this.state;
@@ -87,12 +95,12 @@ export default class extends React.Component {
             <Item inlineLabel last>
               <Icon name="user" type="AntDesign" style={{ color: '#fff' }} />
               <Label style={{ color: '#fff' }}>账号</Label>
-              <Input />
+              <Input style={{ color: '#fff' }} />
             </Item>
             <Item inlineLabel last>
               <Icon name="lock" type="AntDesign" style={{ color: '#fff' }} />
               <Label style={{ color: '#fff' }}>密码</Label>
-              <Input />
+              <Input secureTextEntry style={{ color: '#fff' }} />
             </Item>
             <Button full style={{ marginTop: 20 }} onPress={this.closeModal}>
               <Text style={{ fontSize: 20, color: '#fff' }}>登 录</Text>

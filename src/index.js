@@ -37,7 +37,7 @@ class App extends React.Component {
           <PersistGate loading={<Loading />} persistor={persistor}>
             <StyleProvider style={getTheme(theme)}>
               <Router>
-                <Stack key="root">{Routes}</Stack>
+                {Routes}
               </Router>
             </StyleProvider>
           </PersistGate>
