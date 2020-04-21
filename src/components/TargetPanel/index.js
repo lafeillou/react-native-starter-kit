@@ -70,11 +70,15 @@ export default class TargetPanel extends Component {
       isAllOn: false,
       targetList: [],
       // 当前选中的一级分类
-      currentFirstIndex: 0,
+      currentFirstIndex: -1,
       // 是否显示二级分类列表
       showTargetSubPanel: false,
       // 当前面板宽度
       currentWidth: 322,
+      // 二级列表
+      childList: [],
+      // 二级列表标题：
+      title: '',
     };
 
     this.switchTopSwitchValue = this.switchTopSwitchValue.bind(this);
@@ -82,6 +86,7 @@ export default class TargetPanel extends Component {
     this.closeThisPanel = this.closeThisPanel.bind(this);
     this.closeTargetSubPanel = this.closeTargetSubPanel.bind(this);
     this.pressTargetItem = this.pressTargetItem.bind(this);
+    this.getChildTargetList = this.getChildTargetList.bind(this);
   }
 
 
@@ -105,6 +110,12 @@ export default class TargetPanel extends Component {
         });
       }
     });
+  }
+
+  // 获取当前节点子节点数据
+  getChildTargetList() {
+    const { targetList, currentFirstIndex } = this.state;
+    return targetList[currentFirstIndex].targets;
   }
 
   // 顶级开关
@@ -145,9 +156,13 @@ export default class TargetPanel extends Component {
 
   // 选中某个一级分类
   selectItem(index) {
+    const { targetList } = this.state;
     this.setState({
       currentFirstIndex: index,
+      childList: targetList[index].targets,
+      title: targetList[index].targetClassify.classifyName,
     });
+    // 设置二级列表数据
   }
 
   // 关闭二级分类列表
@@ -168,9 +183,10 @@ export default class TargetPanel extends Component {
     this.selectItem(index);
   }
 
+
   render() {
     const {
-      isAllOn, targetList, currentFirstIndex, showTargetSubPanel, currentWidth,
+      isAllOn, targetList, currentFirstIndex, showTargetSubPanel, currentWidth, childList, title,
     } = this.state;
     const { isVisible } = this.props;
     if (isVisible) {
@@ -246,6 +262,8 @@ export default class TargetPanel extends Component {
           <TargetSubPanel
             isVisible={showTargetSubPanel}
             closeFn={this.closeTargetSubPanel}
+            list={childList}
+            title={title}
             style={{ flex: 1 }}
           />
         </View>

@@ -65,7 +65,7 @@ export default class TargetSubPanel extends Component {
       isAllOn: false,
       targetList: [],
       // 当前选中的一级分类
-      currentFirstIndex: 0,
+      currentFirstIndex: -1,
     };
 
     this.switchTopSwitchValue = this.switchTopSwitchValue.bind(this);
@@ -73,27 +73,29 @@ export default class TargetSubPanel extends Component {
     this.closeThisPanel = this.closeThisPanel.bind(this);
   }
 
+  static getDerivedStateFromProps(nextProps) {
+    if (nextProps.list) {
+      return {
+        targetList: nextProps.list,
+        currentFirstIndex: -1,
+        title: nextProps.title,
+      };
+    }
+    return null;
+  }
 
   componentDidMount() {
-    getTargetTreeList({
-      queryAreaType: 'DISTRICT',
-      queryAreaName: '邓州市',
-      keyword: '',
-    }).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        // 处理一下res.data.data, 标记其子元素上一种状态，即全部灯亮的状态isOn ,注意区别于全局灯亮的isAllOn
-        const data = res.data.data.map((o) => {
-          const temp = o;
-          temp.isOn = false;
-          return temp;
-        });
-        console.log(data);
-        this.setState({
-          targetList: data,
-        });
-      }
-    });
+    // const { list } = this.props;
+    // const data = list.map((o) => {
+    //   const temp = o;
+    //   temp.isOn = false;
+    //   return temp;
+    // });
+    // console.log('==========================list');
+    // console.log(data);
+    // this.setState({
+    //   targetList: data,
+    // });
   }
 
   // 顶级开关
@@ -127,7 +129,6 @@ export default class TargetSubPanel extends Component {
   }
 
   closeThisPanel() {
-    console.log(1);
     const { closeFn } = this.props;
     closeFn();
   }
@@ -135,13 +136,25 @@ export default class TargetSubPanel extends Component {
 
   // 选中某个一级分类
   selectItem(index) {
+    // 修改开关的状态
+    const { targetList } = this.state;
+    const data = targetList.map((o, i) => {
+      if (index === i) {
+        const temp = o;
+        temp.isOn = !o.isOn;
+      }
+      return o;
+    });
     this.setState({
       currentFirstIndex: index,
+      targetList: data,
     });
   }
 
   render() {
-    const { isAllOn, targetList, currentFirstIndex } = this.state;
+    const {
+      isAllOn, targetList, currentFirstIndex, title,
+    } = this.state;
     const { isVisible } = this.props;
     if (isVisible) {
       return (
@@ -157,7 +170,7 @@ export default class TargetSubPanel extends Component {
                 />
               </View>
             </TouchableOpacity>
-            <Text style={styles.title}>xxx</Text>
+            <Text style={styles.title}>{title}</Text>
 
             <View style={{
               position: 'absolute', height: 48, right: 0, top: 0, alignItems: 'center',
@@ -178,31 +191,28 @@ export default class TargetSubPanel extends Component {
               <View>
                 {targetList.map(
                   (value, index) => (
-                    <TouchableOpacity style={styles.listItem} onPress={() => { this.selectItem(index); }} key={`${value.targetClassify.classifyCode}_${value.targetClassify.classifyOrder}`}>
+                    <TouchableOpacity style={styles.listItem} onPress={() => { this.selectItem(index); }} key={`${value.classifyCode}_${value.targetName}_${value.id}`}>
                       <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
                         <Icon name="shiweizhengfu_2" size={24} color="#d36262" style={{ position: 'absolute', left: 20, top: 16 }} />
                         <Text style={{
                           color: '#fff', fontSize: 15, lineHeight: 56, marginLeft: 56,
                         }}
                         >
-                          {value.targetClassify.classifyName}
+                          {value.targetName}
                         </Text>
 
-                        {value.targets.length === 1 ? (
-                          <View style={{
-                            flex: 1, alignItems: 'center', width: 56, height: 56, position: 'absolute', right: 0, top: 0,
-                          }}
-                          >
-                            <Switch
-                              style={{ flex: 1 }}
-                              thumbColor="#fefefe"
-                              trackColor={{ true: '#45aeff', false: 'fefefe' }}
-                              value={value.isOn}
-                              onValueChange={() => { this.switchFirstSwitchValue((index)); }}
-                            />
-                          </View>
-                        ) : <Icon name="right" size={20} color="#fff" style={{ position: 'absolute', right: 16, top: 16 }} />}
-
+                        <View style={{
+                          flex: 1, alignItems: 'center', width: 56, height: 56, position: 'absolute', right: 0, top: 0,
+                        }}
+                        >
+                          <Switch
+                            style={{ flex: 1 }}
+                            thumbColor="#fefefe"
+                            trackColor={{ true: '#45aeff', false: 'fefefe' }}
+                            value={value.isOn}
+                            onValueChange={() => { this.switchFirstSwitchValue((index)); }}
+                          />
+                        </View>
                         <View style={styles.listItemDivider} />
                       </View>
                     </TouchableOpacity>
@@ -222,9 +232,13 @@ export default class TargetSubPanel extends Component {
 TargetSubPanel.propTypes = {
   isVisible: PropTypes.bool,
   closeFn: PropTypes.func,
+  list: PropTypes.array, // 为什么eslint 提示有问题
+  title: PropTypes.string,
 };
 
 TargetSubPanel.defaultProps = {
   isVisible: false,
+  list: [],
+  title: '',
   closeFn: () => {},
 };
