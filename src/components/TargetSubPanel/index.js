@@ -7,49 +7,50 @@ import {
 
 // 接口
 import Icon from 'react-native-vector-icons/Iconfont';
-import { getTargetTreeList } from '../../api';
+
+import { calc } from '../../lib/utils';
 
 const styles = StyleSheet.create({
   container: {
-    width: 322,
+    width: calc(322),
   },
   header: {
     backgroundColor: '#212e4c',
-    height: 48,
+    height: calc(48),
   },
   body: {
     flex: 1,
   },
   headerIcon: {
     position: 'absolute',
-    left: 18,
-    top: 16,
+    left: calc(18),
+    top: calc(16),
   },
   title: {
     color: '#45AEFF',
-    fontSize: 18,
-    lineHeight: 48,
-    marginLeft: 48,
+    fontSize: calc(18),
+    lineHeight: calc(48),
+    marginLeft: calc(48),
   },
   listItem: {
     flex: 0,
-    height: 56,
+    height: calc(56),
     backgroundColor: '#0e1c3d',
     position: 'relative',
 
   },
   listItemDivider: {
     height: 1 / PixelRatio.get(),
-    width: 288,
-    marginLeft: 18,
-    marginRight: 16,
+    width: calc(288),
+    marginLeft: calc(18),
+    marginRight: calc(16),
     backgroundColor: '#212e4c',
     position: 'absolute',
     bottom: 0,
   },
   closeBtn: {
-    width: 48,
-    height: 48,
+    width: calc(48),
+    height: calc(48),
     position: 'absolute',
     left: 0,
     top: 0,
@@ -85,17 +86,6 @@ export default class TargetSubPanel extends Component {
   }
 
   componentDidMount() {
-    // const { list } = this.props;
-    // const data = list.map((o) => {
-    //   const temp = o;
-    //   temp.isOn = false;
-    //   return temp;
-    // });
-    // console.log('==========================list');
-    // console.log(data);
-    // this.setState({
-    //   targetList: data,
-    // });
   }
 
   // 顶级开关
@@ -164,16 +154,16 @@ export default class TargetSubPanel extends Component {
               <View style={styles.closeBtn}>
                 <Icon
                   name="close"
-                  size={18}
+                  size={calc(18)}
                   color="#45AEFF"
-                  style={{ lineHeight: 48, textAlign: 'center' }}
+                  style={{ lineHeight: calc(48), textAlign: 'center' }}
                 />
               </View>
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>
 
             <View style={{
-              position: 'absolute', height: 48, right: 0, top: 0, alignItems: 'center',
+              position: 'absolute', height: calc(48), right: 0, top: 0, alignItems: 'center',
             }}
             >
               <Switch
@@ -193,16 +183,16 @@ export default class TargetSubPanel extends Component {
                   (value, index) => (
                     <TouchableOpacity style={styles.listItem} onPress={() => { this.selectItem(index); }} key={`${value.classifyCode}_${value.targetName}_${value.id}`}>
                       <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
-                        <Icon name="shiweizhengfu_2" size={24} color="#d36262" style={{ position: 'absolute', left: 20, top: 16 }} />
+                        <Icon name="shiweizhengfu_2" size={24} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} />
                         <Text style={{
-                          color: '#fff', fontSize: 15, lineHeight: 56, marginLeft: 56,
+                          color: '#fff', fontSize: calc(15), lineHeight: calc(56), marginLeft: calc(56),
                         }}
                         >
                           {value.targetName}
                         </Text>
 
                         <View style={{
-                          flex: 1, alignItems: 'center', width: 56, height: 56, position: 'absolute', right: 0, top: 0,
+                          flex: 1, alignItems: 'center', width: calc(56), height: calc(56), position: 'absolute', right: calc(16), top: 0,
                         }}
                         >
                           <Switch

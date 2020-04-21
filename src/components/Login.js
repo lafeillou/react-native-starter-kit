@@ -14,6 +14,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import { login } from '../api';
 
+// import { calc } from '../lib/utils';
+
 const { height: deviceHeight } = Dimensions.get('window');
 
 const styles = StyleSheet.create({

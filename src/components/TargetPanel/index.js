@@ -10,6 +10,8 @@ import TargetSubPanel from '../TargetSubPanel';
 // 接口
 import { getTargetTreeList } from '../../api';
 
+import { calc } from '../../lib/utils';
+
 const styles = StyleSheet.create({
   container: {
     height: Dimensions.get('window').height,
@@ -20,41 +22,41 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#212e4c',
-    height: 48,
+    height: calc(48),
   },
   body: {
     flex: 1,
   },
   headerIcon: {
     position: 'absolute',
-    left: 18,
-    top: 16,
+    left: calc(18),
+    top: calc(16),
   },
   title: {
     color: '#45AEFF',
-    fontSize: 18,
-    lineHeight: 48,
-    marginLeft: 48,
+    fontSize: calc(18),
+    lineHeight: calc(48),
+    marginLeft: calc(48),
   },
   listItem: {
     flex: 0,
-    height: 56,
+    height: calc(56),
     backgroundColor: '#0e1c3d',
     position: 'relative',
 
   },
   listItemDivider: {
     height: 1 / PixelRatio.get(),
-    width: 288,
-    marginLeft: 18,
-    marginRight: 16,
+    width: calc(288),
+    marginLeft: calc(18),
+    marginRight: calc(16),
     backgroundColor: '#212e4c',
     position: 'absolute',
     bottom: 0,
   },
   closeBtn: {
-    width: 48,
-    height: 48,
+    width: calc(48),
+    height: calc(48),
     position: 'absolute',
     left: 0,
     top: 0,
@@ -74,7 +76,7 @@ export default class TargetPanel extends Component {
       // 是否显示二级分类列表
       showTargetSubPanel: false,
       // 当前面板宽度
-      currentWidth: 322,
+      currentWidth: calc(322),
       // 二级列表
       childList: [],
       // 二级列表标题：
@@ -132,6 +134,11 @@ export default class TargetPanel extends Component {
     targetList.forEach((o) => {
       const temp = o;
       temp.isOn = !isAllOn;
+      // 二级开关也需要设置
+      temp.targets.forEach((obj) => {
+        const temp2 = obj;
+        temp2.isOn = !isAllOn;
+      });
     });
     this.setState({
       targetList,
@@ -143,6 +150,11 @@ export default class TargetPanel extends Component {
   switchFirstSwitchValue(index) {
     const { targetList } = this.state;
     targetList[index].isOn = !targetList[index].isOn;
+    targetList[index].targets.forEach((obj) => {
+      const temp2 = obj;
+      temp2.isOn = targetList[index].isOn;
+    });
+
     this.setState({
       targetList,
     });
@@ -170,7 +182,7 @@ export default class TargetPanel extends Component {
     this.setState({
       showTargetSubPanel: false,
       // 必须得修改当前面板的宽度
-      currentWidth: 322,
+      currentWidth: calc(322),
     });
   }
 
@@ -178,7 +190,7 @@ export default class TargetPanel extends Component {
     this.setState({
       showTargetSubPanel: true,
       // 必须得修改当前面板的宽度
-      currentWidth: 322 * 2,
+      currentWidth: calc(322) * 2,
     });
     this.selectItem(index);
   }
@@ -198,16 +210,16 @@ export default class TargetPanel extends Component {
                 <View style={styles.closeBtn}>
                   <Icon
                     name="close"
-                    size={18}
+                    size={calc(18)}
                     color="#45AEFF"
-                    style={{ lineHeight: 48, textAlign: 'center' }}
+                    style={{ lineHeight: calc(48), textAlign: 'center' }}
                   />
                 </View>
               </TouchableOpacity>
               <Text style={styles.title}>目标控制器</Text>
 
               <View style={{
-                position: 'absolute', height: 48, right: 0, top: 0, alignItems: 'center',
+                position: 'absolute', height: calc(48), right: calc(4), top: 0, alignItems: 'center',
               }}
               >
                 <Switch
@@ -227,9 +239,9 @@ export default class TargetPanel extends Component {
                     (value, index) => (
                       <TouchableOpacity style={styles.listItem} onPress={() => { this.pressTargetItem(index); }} key={`${value.targetClassify.classifyCode}_${value.targetClassify.classifyOrder}`}>
                         <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
-                          <Icon name="shiweizhengfu_2" size={24} color="#d36262" style={{ position: 'absolute', left: 20, top: 16 }} />
+                          <Icon name="shiweizhengfu_2" size={calc(24)} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} />
                           <Text style={{
-                            color: '#fff', fontSize: 15, lineHeight: 56, marginLeft: 56,
+                            color: '#fff', fontSize: calc(15), lineHeight: calc(56), marginLeft: calc(56),
                           }}
                           >
                             {value.targetClassify.classifyName}
@@ -237,7 +249,7 @@ export default class TargetPanel extends Component {
 
                           {value.targets.length === 1 ? (
                             <View style={{
-                              flex: 1, alignItems: 'center', width: 56, height: 56, position: 'absolute', right: 0, top: 0,
+                              flex: 1, alignItems: 'center', width: calc(56), height: calc(56), position: 'absolute', right: calc(16), top: 0,
                             }}
                             >
                               <Switch
@@ -248,7 +260,7 @@ export default class TargetPanel extends Component {
                                 onValueChange={() => { this.switchFirstSwitchValue((index)); }}
                               />
                             </View>
-                          ) : <Icon name="right" size={20} color="#fff" style={{ position: 'absolute', right: 16, top: 16 }} />}
+                          ) : <Icon name="right" size={calc(20)} color="#fff" style={{ position: 'absolute', right: calc(16), top: calc(16) }} />}
 
                           <View style={styles.listItemDivider} />
                         </View>
