@@ -5,7 +5,7 @@ import {
   StyleSheet, View, Text, Dimensions, TouchableOpacity, Switch, ScrollView, PixelRatio,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Iconfont';
+import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import TargetSubPanel from '../TargetSubPanel';
 // 接口
 import { getTargetTreeList } from '../../api';

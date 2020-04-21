@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 // 接口
-import Icon from 'react-native-vector-icons/Iconfont';
+import Icon from 'yofc-react-native-vector-icons/Iconfont';
 
 import { calc } from '../../lib/utils';
 

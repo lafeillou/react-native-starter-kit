@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import { WebView } from 'react-native-webview';
-import Icon from 'react-native-vector-icons/Iconfont';
+import Icon from 'yofc-react-native-vector-icons/Iconfont';
 
 import { calc } from '../lib/utils';
 
