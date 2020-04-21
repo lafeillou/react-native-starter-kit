@@ -10,6 +10,10 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
+import { login } from '../api';
+
 const { height: deviceHeight } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -31,8 +35,11 @@ export default class extends React.Component {
 
     this.state = {
       offset: new Animated.Value(deviceHeight),
+      userName: '',
+      userPwd: '',
     };
     this.closeModal = this.closeModal.bind(this);
+
     // this._afterAnimation = this._afterAnimation.bind(this);
   }
 
@@ -45,12 +52,21 @@ export default class extends React.Component {
   }
 
   closeModal() {
-    const { offset } = this.state;
-    Animated.timing(offset, {
-      duration: 300,
-      toValue: deviceHeight,
-      // start中的参数是动画结束后的回调
-    }).start(Actions.reset('home'));
+    const { userName, userPwd, offset } = this.state;
+    login({
+      username: userName,
+      password: userPwd,
+    }).then((res) => {
+      // 登录成功了，缓存token
+      if (res.status === 200) {
+        AsyncStorage.setItem('@Authentication:token', res.data.data.token);
+        Animated.timing(offset, {
+          duration: 300,
+          toValue: deviceHeight,
+          // start中的参数是动画结束后的回调
+        }).start(Actions.reset('home'));
+      }
+    });
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -61,9 +77,9 @@ export default class extends React.Component {
   // }
 
   render() {
-    const { offset } = this.state;
+    // const { offset } = this.state;
     // const { data } = this.props;
-
+    const { offset, userName, userPwd } = this.state;
     return (
       <Animated.View
         style={[
@@ -95,12 +111,20 @@ export default class extends React.Component {
             <Item inlineLabel last>
               <Icon name="user" type="AntDesign" style={{ color: '#fff' }} />
               <Label style={{ color: '#fff' }}>账号</Label>
-              <Input style={{ color: '#fff' }} />
+              <Input
+                style={{ color: '#fff' }}
+                value={userName}
+                onChangeText={(text) => { this.setState({ userName: text }); }}
+              />
             </Item>
             <Item inlineLabel last>
               <Icon name="lock" type="AntDesign" style={{ color: '#fff' }} />
               <Label style={{ color: '#fff' }}>密码</Label>
-              <Input secureTextEntry style={{ color: '#fff' }} />
+              <Input
+                secureTextEntry
+                style={{ color: '#fff' }}
+                onChangeText={(text) => { this.setState({ userPwd: text }); }}
+              />
             </Item>
             <Button full style={{ marginTop: 20 }} onPress={this.closeModal}>
               <Text style={{ fontSize: 20, color: '#fff' }}>登 录</Text>
