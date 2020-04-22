@@ -8,7 +8,7 @@ import {
 import { WebView } from 'react-native-webview';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 
-import { string } from 'prop-types';
+// import PropTypes  from 'prop-types';
 import { calc } from '../lib/utils';
 
 import TargetPanel from './TargetPanel';
@@ -64,6 +64,18 @@ const styles = StyleSheet.create({
     borderRadius: calc(6),
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+
+  // 左下角地图切换按钮
+  layerSwitch: {
+    width: calc(96),
+    height: calc(48),
+    backgroundColor: '#212e4c',
+    position: 'absolute',
+    left: calc(20),
+    bottom: calc(20),
+    borderRadius: calc(6),
+    flexDirection: 'row',
   },
 });
 
@@ -227,6 +239,26 @@ export default class LeafLetMap extends Component {
             </View>
           </View>
 
+          {/* 左下角地图切换按钮 */}
+          <View style={styles.layerSwitch}>
+            <TouchableOpacity style={[{ flex: 1 }]}>
+              <Text style={{
+                color: '#fff', lineHeight: calc(48), fontSize: calc(14), textAlign: 'center',
+              }}
+              >
+                地球
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[{ flex: 1 }]}>
+              <Text style={{
+                color: '#fff', lineHeight: calc(48), fontSize: calc(14), textAlign: 'center',
+              }}
+              >
+                卫星
+              </Text>
+            </TouchableOpacity>
+          </View>
           <TargetPanel isVisible={showTargetPanel} closeFn={this.closeTargetPanel} />
         </View>
       );
