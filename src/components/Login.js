@@ -37,8 +37,8 @@ export default class extends React.Component {
 
     this.state = {
       offset: new Animated.Value(deviceHeight),
-      userName: '',
-      userPwd: '',
+      userName: 'mrbird',
+      userPwd: '1234qwer',
     };
     this.closeModal = this.closeModal.bind(this);
 
