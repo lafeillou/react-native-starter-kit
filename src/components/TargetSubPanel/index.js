@@ -78,10 +78,7 @@ export default class TargetSubPanel extends Component {
     let isAllOn = false;
     const { list } = nextProps;
 
-    if (list.length > 0) {
-      isAllOn = list.reduce((boolResult, item) => (boolResult && item.isOn));
-    }
-
+    isAllOn = list.every((o) => o.isOn);
     if (nextProps.list) {
       return {
         targetList: nextProps.list,
@@ -129,7 +126,9 @@ export default class TargetSubPanel extends Component {
   switchFirstSwitchValue(index) {
     const { targetList } = this.state;
     const { onSelected } = this.props;
+
     targetList[index].isOn = !targetList[index].isOn;
+
     this.setState({
       targetList,
     });

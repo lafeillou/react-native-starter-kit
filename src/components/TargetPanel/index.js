@@ -209,26 +209,18 @@ export default class TargetPanel extends Component {
 
     let isOn = false;
 
-    if (targetList[currentFirstIndex].targets.length > 0) {
-      isOn = targetList[currentFirstIndex].targets.reduce(
-        (boolResult, item) => boolResult && item.isOn,
-      );
-    }
+    isOn = targetList[currentFirstIndex].targets.every((o) => o.isOn);
+
 
     targetList[currentFirstIndex].isOn = isOn;
 
-    this.setState({
-      targetList,
-    });
-
     let isAllOn = false;
 
-    if (targetList.length > 0) {
-      isAllOn = targetList.reduce(
-        (boolResult, item) => (boolResult && item.isOn),
-      );
-    }
+    isAllOn = targetList.every((o) => o.isOn);
+
+
     this.setState({
+      targetList,
       isAllOn,
     });
   }
