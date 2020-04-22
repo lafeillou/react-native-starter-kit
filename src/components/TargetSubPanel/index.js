@@ -80,8 +80,6 @@ export default class TargetSubPanel extends Component {
 
     if (list.length > 0) {
       isAllOn = list.reduce((boolResult, item) => (boolResult && item.isOn));
-      console.log('==============================');
-      console.log(isAllOn);
     }
 
     if (nextProps.list) {
@@ -102,6 +100,7 @@ export default class TargetSubPanel extends Component {
 
   // 顶级开关
   switchTopSwitchValue() {
+    const { onSelected } = this.props;
     const { isAllOn } = this.state;
     this.setState(
       {
@@ -115,19 +114,26 @@ export default class TargetSubPanel extends Component {
       const temp = o;
       temp.isOn = !isAllOn;
     });
+
+
     this.setState({
       targetList,
     });
-    // 将所有二级的快关都打开
+    // 这个写法很不好
+    targetList.forEach((o, index) => {
+      onSelected(index, o.isOn);
+    });
   }
 
   // 一级开关
   switchFirstSwitchValue(index) {
     const { targetList } = this.state;
+    const { onSelected } = this.props;
     targetList[index].isOn = !targetList[index].isOn;
     this.setState({
       targetList,
     });
+    onSelected(index, targetList[index].isOn);
   }
 
   closeThisPanel() {

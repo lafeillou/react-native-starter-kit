@@ -81,8 +81,6 @@ export default class TargetPanel extends Component {
       childList: [],
       // 二级列表标题：
       title: '',
-      // 所有子节点是否都选中
-      childIsAllOn: false,
     };
 
     this.switchTopSwitchValue = this.switchTopSwitchValue.bind(this);
@@ -91,7 +89,7 @@ export default class TargetPanel extends Component {
     this.closeTargetSubPanel = this.closeTargetSubPanel.bind(this);
     this.pressTargetItem = this.pressTargetItem.bind(this);
     this.getChildTargetList = this.getChildTargetList.bind(this);
-    this.isAllOn = this.isAllOn.bind(this);
+    // this.isAllOn = this.isAllOn.bind(this);
     this.childListItemSelected = this.childListItemSelected.bind(this);
   }
 
@@ -199,33 +197,39 @@ export default class TargetPanel extends Component {
     this.selectItem(index);
   }
 
-  isAllOn() {
-    const { childList } = this.state;
-    if (childList.length > 0) {
-      console.log(childList.reduce((boolResult, item) => (boolResult && item.isOn)));
-      return childList.reduce((boolResult, item) => (boolResult && item.isOn));
-    }
-    return false;
-  }
-
-
   // 子组件传来状态,某个子节点被选中状态
   childListItemSelected(index, bool) {
-    console.log(index);
-    console.log(bool);
     const { targetList, currentFirstIndex } = this.state;
-
-
     targetList[currentFirstIndex].targets.forEach((o, i) => {
       if (i === index) {
         // eslint-disable-next-line no-param-reassign
         o.isOn = bool;
       }
     });
-    // const childList = targetList[currentFirstIndex].targets;
+
+    let isOn = false;
+
+    if (targetList[currentFirstIndex].targets.length > 0) {
+      isOn = targetList[currentFirstIndex].targets.reduce(
+        (boolResult, item) => boolResult && item.isOn,
+      );
+    }
+
+    targetList[currentFirstIndex].isOn = isOn;
+
     this.setState({
       targetList,
-      // childIsAllOn: this.isAllOn(childList),
+    });
+
+    let isAllOn = false;
+
+    if (targetList.length > 0) {
+      isAllOn = targetList.reduce(
+        (boolResult, item) => (boolResult && item.isOn),
+      );
+    }
+    this.setState({
+      isAllOn,
     });
   }
 
