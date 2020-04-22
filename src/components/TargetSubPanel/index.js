@@ -75,17 +75,29 @@ export default class TargetSubPanel extends Component {
   }
 
   static getDerivedStateFromProps(nextProps) {
+    let isAllOn = false;
+    const { list } = nextProps;
+
+    if (list.length > 0) {
+      isAllOn = list.reduce((boolResult, item) => (boolResult && item.isOn));
+      console.log('==============================');
+      console.log(isAllOn);
+    }
+
     if (nextProps.list) {
       return {
         targetList: nextProps.list,
         currentFirstIndex: -1,
         title: nextProps.title,
+        isAllOn,
       };
     }
+
     return null;
   }
 
   componentDidMount() {
+
   }
 
   // 顶级开关
@@ -139,6 +151,10 @@ export default class TargetSubPanel extends Component {
       currentFirstIndex: index,
       targetList: data,
     });
+
+    // 通知一级分类数据变更
+    const { onSelected } = this.props;
+    onSelected(index, data[index].isOn);
   }
 
   render() {
@@ -224,6 +240,7 @@ TargetSubPanel.propTypes = {
   closeFn: PropTypes.func,
   list: PropTypes.array, // 为什么eslint 提示有问题
   title: PropTypes.string,
+  onSelected: PropTypes.func,
 };
 
 TargetSubPanel.defaultProps = {
@@ -231,4 +248,5 @@ TargetSubPanel.defaultProps = {
   list: [],
   title: '',
   closeFn: () => {},
+  onSelected: () => {},
 };

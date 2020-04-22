@@ -81,6 +81,8 @@ export default class TargetPanel extends Component {
       childList: [],
       // 二级列表标题：
       title: '',
+      // 所有子节点是否都选中
+      childIsAllOn: false,
     };
 
     this.switchTopSwitchValue = this.switchTopSwitchValue.bind(this);
@@ -89,6 +91,8 @@ export default class TargetPanel extends Component {
     this.closeTargetSubPanel = this.closeTargetSubPanel.bind(this);
     this.pressTargetItem = this.pressTargetItem.bind(this);
     this.getChildTargetList = this.getChildTargetList.bind(this);
+    this.isAllOn = this.isAllOn.bind(this);
+    this.childListItemSelected = this.childListItemSelected.bind(this);
   }
 
 
@@ -98,7 +102,7 @@ export default class TargetPanel extends Component {
       queryAreaName: '邓州市',
       keyword: '',
     }).then((res) => {
-      console.log(res);
+      // console.log(res);
       if (res.status === 200) {
         // 处理一下res.data.data, 标记其子元素上一种状态，即全部灯亮的状态isOn ,注意区别于全局灯亮的isAllOn
         const data = res.data.data.map((o) => {
@@ -106,7 +110,7 @@ export default class TargetPanel extends Component {
           temp.isOn = false;
           return temp;
         });
-        console.log(data);
+        // console.log(data);
         this.setState({
           targetList: data,
         });
@@ -169,12 +173,12 @@ export default class TargetPanel extends Component {
   // 选中某个一级分类
   selectItem(index) {
     const { targetList } = this.state;
+    // 设置二级列表数据
     this.setState({
       currentFirstIndex: index,
       childList: targetList[index].targets,
       title: targetList[index].targetClassify.classifyName,
     });
-    // 设置二级列表数据
   }
 
   // 关闭二级分类列表
@@ -195,10 +199,40 @@ export default class TargetPanel extends Component {
     this.selectItem(index);
   }
 
+  isAllOn() {
+    const { childList } = this.state;
+    if (childList.length > 0) {
+      console.log(childList.reduce((boolResult, item) => (boolResult && item.isOn)));
+      return childList.reduce((boolResult, item) => (boolResult && item.isOn));
+    }
+    return false;
+  }
+
+
+  // 子组件传来状态,某个子节点被选中状态
+  childListItemSelected(index, bool) {
+    console.log(index);
+    console.log(bool);
+    const { targetList, currentFirstIndex } = this.state;
+
+
+    targetList[currentFirstIndex].targets.forEach((o, i) => {
+      if (i === index) {
+        // eslint-disable-next-line no-param-reassign
+        o.isOn = bool;
+      }
+    });
+    // const childList = targetList[currentFirstIndex].targets;
+    this.setState({
+      targetList,
+      // childIsAllOn: this.isAllOn(childList),
+    });
+  }
 
   render() {
     const {
-      isAllOn, targetList, currentFirstIndex, showTargetSubPanel, currentWidth, childList, title,
+      isAllOn, targetList, currentFirstIndex, showTargetSubPanel,
+      currentWidth, childList, title,
     } = this.state;
     const { isVisible } = this.props;
     if (isVisible) {
@@ -274,6 +308,7 @@ export default class TargetPanel extends Component {
           <TargetSubPanel
             isVisible={showTargetSubPanel}
             closeFn={this.closeTargetSubPanel}
+            onSelected={this.childListItemSelected}
             list={childList}
             title={title}
             style={{ flex: 1 }}
