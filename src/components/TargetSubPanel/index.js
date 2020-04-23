@@ -72,6 +72,7 @@ export default class TargetSubPanel extends Component {
     this.switchTopSwitchValue = this.switchTopSwitchValue.bind(this);
     this.switchFirstSwitchValue = this.switchFirstSwitchValue.bind(this);
     this.closeThisPanel = this.closeThisPanel.bind(this);
+    this.dispatchGeoJsonDataToH5 = this.dispatchGeoJsonDataToH5.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -92,7 +93,8 @@ export default class TargetSubPanel extends Component {
   }
 
   componentDidMount() {
-
+    console.log('==========================TargetSubPanel组件=======');
+    console.log(this);
   }
 
   // 顶级开关
@@ -133,6 +135,7 @@ export default class TargetSubPanel extends Component {
       targetList,
     });
     onSelected(index, targetList[index].isOn);
+    this.dispatchGeoJsonDataToH5(targetList[index]);
   }
 
   closeThisPanel() {
@@ -160,6 +163,25 @@ export default class TargetSubPanel extends Component {
     // 通知一级分类数据变更
     const { onSelected } = this.props;
     onSelected(index, data[index].isOn);
+    // 分发数据给webview中的h5页面，将地图上的自定义图层点亮（自定义图层为GeoJson数据)
+    // 选中目标数据
+    // console.log('=====================目标数据==========================');
+    // console.log(data[index]);
+    this.dispatchGeoJsonDataToH5(data[index]);
+  }
+
+  //
+  dispatchGeoJsonDataToH5(data) {
+    const { webref } = this.context;
+    const json = {
+      callback: 'window.Vue.$emit("dispatchGeoJsonDataToH5", {data: data.data})',
+      args: {
+        data: JSON.stringify(data),
+      },
+    };
+    // console.log('==================打印上下文========================');
+    // console.log(this.context);
+    webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
   }
 
   render() {
@@ -254,4 +276,8 @@ TargetSubPanel.defaultProps = {
   title: '',
   closeFn: () => {},
   onSelected: () => {},
+};
+
+TargetSubPanel.contextTypes = {
+  webref: PropTypes.object,
 };

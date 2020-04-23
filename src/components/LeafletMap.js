@@ -9,11 +9,13 @@ import { WebView } from 'react-native-webview';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 
 // import PropTypes  from 'prop-types';
+import PropTypes from 'prop-types';
 import { calc } from '../lib/utils';
 
 import TargetPanel from './TargetPanel';
 
 import clientMethod from '../lib/postJsCode';
+
 
 const patchPostMessageJsCode = `(${String(clientMethod)})(); true;`;
 
@@ -103,6 +105,10 @@ export default class LeafLetMap extends Component {
     this.switchLayer = this.switchLayer.bind(this);
   }
 
+
+  getChildContext() {
+    return { webref: this.webref };
+  }
 
   componentDidMount() {
 
@@ -194,6 +200,7 @@ export default class LeafLetMap extends Component {
       const { showTargetPanel, currentLayerName } = this.state;
 
       return (
+
         <View style={styles.container}>
           <WebView
             onMessage={this.onMessage}
@@ -253,7 +260,7 @@ export default class LeafLetMap extends Component {
             <View style={[styles.btn, styles.flex0]}>
               <Icon name="disconnect" size={calc(24)} color="white" />
             </View>
-            <Text style={{ color: '#fff', fontSize: 26, lineHeight: calc(48) }}>•••</Text>
+            <Text style={{ color: '#fff', fontSize: calc(26), lineHeight: calc(48) }}>•••</Text>
             <View style={[styles.btn, styles.flex0]}>
               <Icon name="desktop" size={calc(24)} color="white" />
             </View>
@@ -281,6 +288,13 @@ export default class LeafLetMap extends Component {
           </View>
           <TargetPanel isVisible={showTargetPanel} closeFn={this.closeTargetPanel} />
         </View>
+
       );
     }
 }
+
+
+LeafLetMap.childContextTypes = {
+  // 老子就是要传一个对象过去试试; 老子成功了！！！
+  webref: PropTypes.object,
+};
