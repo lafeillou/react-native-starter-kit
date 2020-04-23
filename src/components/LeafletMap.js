@@ -7,9 +7,11 @@ import {
 
 import { WebView } from 'react-native-webview';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
+import Icon2 from 'yofc-react-native-vector-icons/Ionicons';
 
 // import PropTypes  from 'prop-types';
 import PropTypes from 'prop-types';
+import { Actions } from 'react-native-router-flux';
 import { calc } from '../lib/utils';
 
 import TargetPanel from './TargetPanel';
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#212e4e',
     position: 'absolute',
     top: calc(20),
-    left: Dimensions.get('window').width / 2 - 90,
+    left: Dimensions.get('window').width / 2 - calc(90),
     borderRadius: calc(6),
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -85,6 +87,36 @@ const styles = StyleSheet.create({
   layerSwitchBtnSelected: {
     backgroundColor: '#45aeff',
   },
+
+  // 底部当前聚焦坐标信息
+  currentFocus: {
+    backgroundColor: '#212e4c',
+    width: calc(240),
+    height: calc(48),
+    borderRadius: calc(6),
+    flexDirection: 'row',
+  },
+  currentFocus_Pos: {
+    position: 'absolute',
+    left: Dimensions.get('window').width / 2 - calc(90),
+    bottom: calc(20),
+  },
+  CurrentFocus__leftBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  CurrentFocus__midBtn: {
+    flex: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: calc(160),
+  },
+  CurrentFocus__rightBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 
@@ -96,6 +128,8 @@ export default class LeafLetMap extends Component {
     this.state = {
       showTargetPanel: false,
       currentLayerName: '地图',
+      // 当前聚焦的点
+      currentFocusTarget: null,
     };
     this.openTargetPanel = this.openTargetPanel.bind(this);
     this.closeTargetPanel = this.closeTargetPanel.bind(this);
@@ -103,11 +137,16 @@ export default class LeafLetMap extends Component {
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
     this.switchLayer = this.switchLayer.bind(this);
+    this.setCurrentFocusTarget = this.setCurrentFocusTarget.bind(this);
+    this.showTargetObjectPanel = this.showTargetObjectPanel.bind(this);
   }
 
 
   getChildContext() {
-    return { webref: this.webref };
+    return {
+      webref: this.webref,
+      setCurrentFocusTarget: this.setCurrentFocusTarget,
+    };
   }
 
   componentDidMount() {
@@ -137,6 +176,20 @@ export default class LeafLetMap extends Component {
       }
     }
 
+
+    // 设置当前聚焦的点
+    setCurrentFocusTarget(target) {
+      this.setState({
+        currentFocusTarget: target,
+      });
+    }
+
+    // 打开目标点信息展示面板
+    // eslint-disable-next-line class-methods-use-this
+    showTargetObjectPanel() {
+      // Actions.targetObject();
+    }
+
     openTargetPanel() {
       this.setState({
         showTargetPanel: true,
@@ -164,6 +217,7 @@ export default class LeafLetMap extends Component {
       };
       this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
     }
+
 
     // 放大地图
     zoomIn() {
@@ -197,7 +251,7 @@ export default class LeafLetMap extends Component {
     }
 
     render() {
-      const { showTargetPanel, currentLayerName } = this.state;
+      const { showTargetPanel, currentLayerName, currentFocusTarget } = this.state;
 
       return (
 
@@ -286,8 +340,29 @@ export default class LeafLetMap extends Component {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* 底部当前聚焦目标信息 */}
+          {currentFocusTarget && (
+          <View style={[styles.currentFocus, styles.currentFocus_Pos]}>
+            <View style={styles.CurrentFocus__leftBtn}>
+              <Icon name="location" size={calc(24)} color="white" />
+            </View>
+            <View style={styles.CurrentFocus__midBtn}>
+              <Text style={{ color: '#fff', fontSize: calc(18), lineHeight: calc(48) }} ellipsizeMode="tail" numberOfLines={1}>{currentFocusTarget.targetName}</Text>
+            </View>
+            <TouchableOpacity style={styles.CurrentFocus__rightBtn} onPress={this.showTargetObjectPanel}>
+              <View>
+                <Icon2 name="ios-information-circle" size={calc(24)} color="#e55c58" />
+              </View>
+            </TouchableOpacity>
+
+          </View>
+          ) }
+
+
           <TargetPanel isVisible={showTargetPanel} closeFn={this.closeTargetPanel} />
         </View>
+
 
       );
     }
@@ -297,4 +372,5 @@ export default class LeafLetMap extends Component {
 LeafLetMap.childContextTypes = {
   // 老子就是要传一个对象过去试试; 老子成功了！！！
   webref: PropTypes.object,
+  setCurrentFocusTarget: PropTypes.func,
 };

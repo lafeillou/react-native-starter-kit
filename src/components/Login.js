@@ -125,6 +125,7 @@ export default class extends React.Component {
               <Input
                 secureTextEntry
                 style={{ color: '#fff' }}
+                value={userPwd}
                 onChangeText={(text) => { this.setState({ userPwd: text }); }}
               />
             </Item>

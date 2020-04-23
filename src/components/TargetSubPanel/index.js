@@ -172,7 +172,7 @@ export default class TargetSubPanel extends Component {
 
   //
   dispatchGeoJsonDataToH5(data) {
-    const { webref } = this.context;
+    const { webref, setCurrentFocusTarget } = this.context;
     const json = {
       callback: 'window.Vue.$emit("dispatchGeoJsonDataToH5", {data: data.data})',
       args: {
@@ -182,6 +182,8 @@ export default class TargetSubPanel extends Component {
     // console.log('==================打印上下文========================');
     // console.log(this.context);
     webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+    // 设置当前聚焦的点
+    setCurrentFocusTarget(data);
   }
 
   render() {
@@ -280,4 +282,5 @@ TargetSubPanel.defaultProps = {
 
 TargetSubPanel.contextTypes = {
   webref: PropTypes.object,
+  setCurrentFocusTarget: PropTypes.func,
 };
