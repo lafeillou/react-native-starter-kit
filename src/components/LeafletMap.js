@@ -76,6 +76,12 @@ const styles = StyleSheet.create({
     bottom: calc(20),
     borderRadius: calc(6),
     flexDirection: 'row',
+    overflow: 'hidden',
+  },
+
+  // 被选中地图图层按钮的样式
+  layerSwitchBtnSelected: {
+    backgroundColor: '#45aeff',
   },
 });
 
@@ -87,12 +93,14 @@ export default class LeafLetMap extends Component {
     super(props);
     this.state = {
       showTargetPanel: false,
+      currentLayerName: '地图',
     };
     this.openTargetPanel = this.openTargetPanel.bind(this);
     this.closeTargetPanel = this.closeTargetPanel.bind(this);
     this.testClick = this.testClick.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
+    this.switchLayer = this.switchLayer.bind(this);
   }
 
 
@@ -170,8 +178,20 @@ export default class LeafLetMap extends Component {
       this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
     }
 
+    // 切换地图图层
+    switchLayer(name) {
+      const json = {
+        callback: 'window.Vue.$emit("switchLayer", {name: data.name})',
+        args: {
+          name,
+        },
+      };
+      this.setState({ currentLayerName: name });
+      this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+    }
+
     render() {
-      const { showTargetPanel } = this.state;
+      const { showTargetPanel, currentLayerName } = this.state;
 
       return (
         <View style={styles.container}>
@@ -241,16 +261,16 @@ export default class LeafLetMap extends Component {
 
           {/* 左下角地图切换按钮 */}
           <View style={styles.layerSwitch}>
-            <TouchableOpacity style={[{ flex: 1 }]}>
+            <TouchableOpacity style={[{ flex: 1 }, currentLayerName === '地图' ? styles.layerSwitchBtnSelected : {}]} onPress={() => { this.switchLayer('地图'); }}>
               <Text style={{
                 color: '#fff', lineHeight: calc(48), fontSize: calc(14), textAlign: 'center',
               }}
               >
-                地球
+                地图
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[{ flex: 1 }]}>
+            <TouchableOpacity style={[{ flex: 1 }, currentLayerName === '卫星' ? styles.layerSwitchBtnSelected : {}]} onPress={() => { this.switchLayer('卫星'); }}>
               <Text style={{
                 color: '#fff', lineHeight: calc(48), fontSize: calc(14), textAlign: 'center',
               }}

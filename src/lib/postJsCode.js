@@ -21,15 +21,16 @@ export default function clientMethod() {
       if (typeof callback === 'string' && callback.indexOf('__CALLBACK__') >= 0) {
         func = APP[callback];
         if (typeof func === 'function') {
-         
+          setTimeout(function () {
+            func.call(this, args);
+          }, 0);
         }
       } else {
         func = new Function('data',callback);
+        setTimeout(function () {
+          func.call(this, args);
+        }, 0);
       }
-
-      setTimeout(function () {
-        func.call(this, args);
-      }, 0);
     },
   };
   window.APP = APP;
