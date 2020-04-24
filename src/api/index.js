@@ -29,3 +29,14 @@ export function getTargetTreeList(params) {
     params,
   });
 }
+
+/**
+ * 发送指令给远端
+ */
+export function sendCommandToRemote(data) {
+  return axios({
+    method: 'post',
+    url: '/api/v1/sandtable_event/target_control',
+    data,
+  });
+}

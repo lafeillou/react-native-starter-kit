@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import {
-  StyleSheet, View, Text, TouchableOpacity, Switch, ScrollView, PixelRatio,
+  StyleSheet, View, Text, TouchableOpacity, Switch, ScrollView, PixelRatio, ToastAndroid,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 
 // 接口
-
+import { sendCommandToRemote } from '../../api/index';
 import { calc } from '../../lib/utils';
 
 const styles = StyleSheet.create({
@@ -94,8 +93,8 @@ export default class TargetSubPanel extends Component {
   }
 
   componentDidMount() {
-    console.log('==========================TargetSubPanel组件=======');
-    console.log(this);
+    // console.log('==========================TargetSubPanel组件=======');
+    // console.log(this);
   }
 
   // 顶级开关
@@ -169,6 +168,29 @@ export default class TargetSubPanel extends Component {
     // console.log('=====================目标数据==========================');
     // console.log(data[index]);
     this.dispatchGeoJsonDataToH5(data[index]);
+    // 向远端发送指令
+    sendCommandToRemote({
+      // "targetId":7(目标对象的ID),
+      // "eventSource":"PAD|PC|DI(光感输入信号)",
+      // "eventType":"OBJECT(目标对象)|DESCRIBE(文字描述)|PICTURE(图片)|VIDEO(视频)",
+      // "eventAction":"LOCATE(目标对象在地图中定位)|SWITCH(目标对象附加tab页的切换动作)|SHOW(附件资料在地图中央的居中弹层展示或播放)",
+      // eslint-disable-next-line max-len
+      // "eventAttachmentUrl":"eventType=PICTURE|VIDEO & eventAction=SHOW时 必填  内容为 附件URL  可通过http方式直接调用"
+      targetId: data[index].id,
+      eventSource: 'PAD',
+      eventType: 'OBJECT',
+      eventAction: 'LOCATE',
+    }).then((res) => {
+      console.log('=============指令调用结果==================');
+      console.log(res);
+      if (res.status === 200) {
+        ToastAndroid.showWithGravity(
+          res.data.message,
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+    });
   }
 
   //
