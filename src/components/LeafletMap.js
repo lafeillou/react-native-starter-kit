@@ -138,6 +138,7 @@ export default class LeafLetMap extends Component {
     this.zoomOut = this.zoomOut.bind(this);
     this.switchLayer = this.switchLayer.bind(this);
     this.setCurrentFocusTarget = this.setCurrentFocusTarget.bind(this);
+    this.getCurrentFocusTarget = this.getCurrentFocusTarget.bind(this);
     this.showTargetObjectPanel = this.showTargetObjectPanel.bind(this);
   }
 
@@ -146,6 +147,7 @@ export default class LeafLetMap extends Component {
     return {
       webref: this.webref,
       setCurrentFocusTarget: this.setCurrentFocusTarget,
+      getCurrentFocusTarget: this.getCurrentFocusTarget,
     };
   }
 
@@ -176,6 +178,11 @@ export default class LeafLetMap extends Component {
       }
     }
 
+    // 获取当前聚焦的点
+    getCurrentFocusTarget() {
+      const { currentFocusTarget } = this.state;
+      return currentFocusTarget;
+    }
 
     // 设置当前聚焦的点
     setCurrentFocusTarget(target) {
@@ -373,4 +380,5 @@ LeafLetMap.childContextTypes = {
   // 老子就是要传一个对象过去试试; 老子成功了！！！
   webref: PropTypes.object,
   setCurrentFocusTarget: PropTypes.func,
+  getCurrentFocusTarget: PropTypes.func,
 };
