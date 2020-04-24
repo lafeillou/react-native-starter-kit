@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { Router, Stack } from 'react-native-router-flux';
+import {
+  Router, Stack, Overlay, Modal, Lightbox,
+} from 'react-native-router-flux';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import SplashScreen from 'react-native-splash-screen';
 
@@ -37,7 +39,15 @@ class App extends React.Component {
           <PersistGate loading={<Loading />} persistor={persistor}>
             <StyleProvider style={getTheme(theme)}>
               <Router>
-                {Routes}
+
+                <Overlay key="overlay">
+                  <Modal key="modal" hideNavBar>
+                    {/* <Lightbox key="lightbox"> */}
+                    {Routes}
+                    {/* </Lightbox> */}
+                  </Modal>
+                </Overlay>
+
               </Router>
             </StyleProvider>
           </PersistGate>

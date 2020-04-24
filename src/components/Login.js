@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, Animated, Dimensions,
+  View, Text, StyleSheet,
 } from 'react-native';
 
 import {
@@ -15,8 +15,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { login } from '../api';
 
 // import { calc } from '../lib/utils';
-
-const { height: deviceHeight } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -36,7 +34,6 @@ export default class extends React.Component {
     super(props);
 
     this.state = {
-      offset: new Animated.Value(deviceHeight),
       userName: 'mrbird',
       userPwd: '1234qwer',
     };
@@ -46,15 +43,11 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    const { offset } = this.state;
-    Animated.timing(offset, {
-      duration: 300,
-      toValue: 0,
-    }).start();
+
   }
 
   closeModal() {
-    const { userName, userPwd, offset } = this.state;
+    const { userName, userPwd } = this.state;
     login({
       username: userName,
       password: userPwd,
@@ -62,40 +55,24 @@ export default class extends React.Component {
       // 登录成功了，缓存token
       if (res.status === 200) {
         AsyncStorage.setItem('@Authentication:token', res.data.data.token);
-        Animated.timing(offset, {
-          duration: 300,
-          toValue: deviceHeight,
-          // start中的参数是动画结束后的回调
-        }).start(Actions.reset('home'));
+        Actions.home();
       }
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  // _afterAnimation() {
-  //   setTimeout(() => {
-  //     Actions.reset('home');
-  //   }, 0);
-  // }
-
   render() {
-    // const { offset } = this.state;
-    // const { data } = this.props;
-    const { offset, userName, userPwd } = this.state;
+    const { userName, userPwd } = this.state;
     return (
-      <Animated.View
+      <View
         style={[
           styles.container,
           { backgroundColor: '#0c132c' },
-          { transform: [{ translateY: offset }] },
         ]}
       >
         <View
           style={{
             width: 350,
             height: 250,
-            // justifyContent: 'center',
-            // alignItems: 'center',
             backgroundColor: '#000',
             borderWidth: 2,
             borderColor: '#fff',
@@ -134,7 +111,7 @@ export default class extends React.Component {
             </Button>
           </Form>
         </View>
-      </Animated.View>
+      </View>
     );
   }
 }
