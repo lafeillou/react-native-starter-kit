@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View, Text, StyleSheet,
 } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -20,20 +20,18 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    // Actions.drawerOpen();
+
   }
 
 
   render() {
-    // const { children } = this.props;
     return (
       <View style={{
-        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'transparent',
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
       }}
       >
-        <Text style={{ fontSize: 40, color: '#000' }}>targetObject</Text>
+        <Text style={{ fontSize: 40, color: '#000' }}>Test</Text>
       </View>
-    // children
     );
   }
 }

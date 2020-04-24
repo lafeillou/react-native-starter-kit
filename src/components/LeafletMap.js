@@ -187,6 +187,9 @@ export default class LeafLetMap extends Component {
     // 打开目标点信息展示面板
     // eslint-disable-next-line class-methods-use-this
     showTargetObjectPanel() {
+      console.log('==========================here');
+      console.log(Actions);
+      Actions.drawerOpen();
       // Actions.targetObject();
     }
 
@@ -350,7 +353,7 @@ export default class LeafLetMap extends Component {
             <View style={styles.CurrentFocus__midBtn}>
               <Text style={{ color: '#fff', fontSize: calc(18), lineHeight: calc(48) }} ellipsizeMode="tail" numberOfLines={1}>{currentFocusTarget.targetName}</Text>
             </View>
-            <TouchableOpacity style={styles.CurrentFocus__rightBtn} onPress={this.showTargetObjectPanel}>
+            <TouchableOpacity style={styles.CurrentFocus__rightBtn} onPress={() => { this.showTargetObjectPanel(); }}>
               <View>
                 <Icon2 name="ios-information-circle" size={calc(24)} color="#e55c58" />
               </View>

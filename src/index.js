@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import {
-  Router, Stack, Overlay, Modal, Lightbox,
+  Router, Scene, Stack, Overlay, Modal, Lightbox,
 } from 'react-native-router-flux';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import SplashScreen from 'react-native-splash-screen';
@@ -12,6 +12,9 @@ import getTheme from '../native-base-theme/components';
 import theme from '../native-base-theme/variables/commonColor';
 
 import Routes from './routes/index';
+// import TargetObjectDrawerRoutes from './routes/targetObjectDrawer';
+import Login from './components/Login';
+
 import Loading from './components/UI/Loading';
 
 class App extends React.Component {
@@ -43,11 +46,12 @@ class App extends React.Component {
                 <Overlay key="overlay">
                   <Modal key="modal" hideNavBar>
                     {/* <Lightbox key="lightbox"> */}
+                    <Scene hideNavBar key="login" component={Login} />
                     {Routes}
+                    {/* {TargetObjectDrawerRoutes} */}
                     {/* </Lightbox> */}
                   </Modal>
                 </Overlay>
-
               </Router>
             </StyleProvider>
           </PersistGate>
