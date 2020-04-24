@@ -7,8 +7,12 @@ import {
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 
 // 接口
+import { connect } from 'react-redux';
 import { sendCommandToRemote } from '../../api/index';
 import { calc } from '../../lib/utils';
+
+// 引入react-redux
+
 
 const styles = StyleSheet.create({
   container: {
@@ -58,7 +62,7 @@ const styles = StyleSheet.create({
 });
 
 
-export default class TargetSubPanel extends Component {
+class TargetSubPanel extends Component {
   constructor(props) {
     super(props);
 
@@ -160,7 +164,9 @@ export default class TargetSubPanel extends Component {
     });
 
     // 通知一级分类数据变更
-    const { onSelected } = this.props;
+    const { onSelected, setCurrentTarget } = this.props;
+    // 修改redux中当前选中目标的值
+    setCurrentTarget(data[index]);
     onSelected(index, data[index].isOn);
     // 分发数据给webview中的h5页面，将地图上的自定义图层点亮（自定义图层为GeoJson数据)
     // 选中目标数据
@@ -259,7 +265,8 @@ export default class TargetSubPanel extends Component {
                         </Text>
 
                         {/* <View style={{
-                          flex: 1, alignItems: 'center', width: calc(56), height: calc(56), position: 'absolute', right: calc(16), top: 0,
+                          flex: 1, alignItems: 'center', width: calc(56), height: calc(56),
+                          // position: 'absolute', right: calc(16), top: 0,
                         }}
                         >
                           <Switch
@@ -293,6 +300,8 @@ TargetSubPanel.propTypes = {
   title: PropTypes.string,
   onSelected: PropTypes.func,
   selectedIndex: PropTypes.number,
+  setCurrentTarget: PropTypes.func,
+
 };
 
 TargetSubPanel.defaultProps = {
@@ -307,3 +316,13 @@ TargetSubPanel.contextTypes = {
   webref: PropTypes.object,
   setCurrentFocusTarget: PropTypes.func,
 };
+
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentTarget: dispatch.app.setCurrentTarget,
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(TargetSubPanel);

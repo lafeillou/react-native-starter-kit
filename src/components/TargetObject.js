@@ -1,14 +1,17 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity,
+  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
-
+import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import Video from 'react-native-video';
 import { calc } from '../lib/utils';
 
 import TargetObjectTabs from './TargetObjectTabs';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -40,20 +43,40 @@ const styles = StyleSheet.create({
   flex0: {
     flex: 0,
   },
+  imageStyle: {
+    width: calc(420),
+    height: calc(300),
+    marginLeft: calc(20),
+    marginRight: calc(20),
+    marginTop: calc(20),
+  },
+  backgroundVideo: {
+    width: calc(420),
+    height: calc(300),
+    marginLeft: calc(20),
+    marginRight: calc(20),
+    marginTop: calc(20),
+  },
 });
 
-export default class extends React.Component {
+class TargetObject extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-
+      // 视频暂停
+      videoPaused: true,
     };
     this.closeDrawer = this.closeDrawer.bind(this);
+    this.onBuffer = this.onBuffer.bind(this);
+    this.videoError = this.videoError.bind(this);
+    this.togglePlay = this.togglePlay.bind(this);
   }
 
   componentDidMount() {
-
+    // console.log('===================context=============');
+    // console.log(this);
+    // console.log(this.context);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -61,7 +84,24 @@ export default class extends React.Component {
     Actions.drawerClose();
   }
 
+  onBuffer(e) {
+    console.log(e);
+  }
+
+  videoError(e) {
+    console.log(e);
+  }
+
+  togglePlay() {
+    const { videoPaused } = this.state;
+    this.setState({
+      videoPaused: !videoPaused,
+    });
+  }
+
   render() {
+    const { currentTarget } = this.props;
+    const { videoPaused } = this.state;
     return (
       <View style={styles.container}>
 
@@ -87,7 +127,7 @@ export default class extends React.Component {
               color: '#45AEFF', lineHeight: calc(48), fontSize: calc(18), fontWeight: 'bold',
             }}
             >
-              邓州市市委市政府
+              {currentTarget.targetName}
             </Text>
           </View>
 
@@ -103,13 +143,37 @@ export default class extends React.Component {
         <View style={{ flex: 1 }}>
           <TargetObjectTabs>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: '#fff' }}>1</Text>
+              {currentTarget.targetDesc && (<Text style={{ color: '#fff', lineHeight: calc(20) * 1.5 }}>{currentTarget.targetDesc}</Text>)}
+
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: '#fff' }}>2</Text>
+
+              {currentTarget.pictureList.map((o) => (
+                <Image source={{ uri: `http://192.168.8.154/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
+              ))}
+
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: '#fff' }}>3</Text>
+              {currentTarget.mediaList.map((o) =>
+              // 视频目前只支持一个
+                (
+                  <TouchableOpacity onPress={() => { this.togglePlay(); }}>
+                    <Video
+                      source={{ uri: `http://192.168.8.154/${o.fullPath}` }} // Can be a URL or a local file.
+                      key={o.fileId}
+                      ref={(ref) => {
+                        this.player = ref;
+                      }} // Store reference
+                      onBuffer={this.onBuffer} // Callback when remote video is buffering
+                      onError={this.videoError} // Callback when video cannot be loaded
+                      style={[styles.backgroundVideo]}
+                      paused={videoPaused}
+                      resizeMode="cover"
+                      volume={0.1}
+                      controls
+                    />
+                  </TouchableOpacity>
+                ))}
             </View>
           </TargetObjectTabs>
         </View>
@@ -117,3 +181,19 @@ export default class extends React.Component {
     );
   }
 }
+
+TargetObject.propTypes = {
+  currentTarget: PropTypes.object,
+};
+
+
+const mapStateToProps = (state) => ({
+  currentTarget: state.app.currentTarget,
+  videoPause: state.app.videoPause,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  // toggleVideoPause:
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TargetObject);

@@ -280,22 +280,7 @@ export default class TargetPanel extends Component {
                           >
                             {value.targetClassify.classifyName}
                           </Text>
-
-                          {value.targets.length === 1 ? (
-                            <View style={{
-                              flex: 1, alignItems: 'center', width: calc(56), height: calc(56), position: 'absolute', right: calc(16), top: 0,
-                            }}
-                            >
-                              <Switch
-                                style={{ flex: 1 }}
-                                thumbColor="#fefefe"
-                                trackColor={{ true: '#45aeff', false: 'fefefe' }}
-                                value={value.isOn}
-                                onValueChange={() => { this.switchFirstSwitchValue((index)); }}
-                              />
-                            </View>
-                          ) : <Icon name="right" size={calc(20)} color="#fff" style={{ position: 'absolute', right: calc(16), top: calc(16) }} />}
-
+                          <Icon name="right" size={calc(20)} color="#fff" style={{ position: 'absolute', right: calc(16), top: calc(16) }} />
                           <View style={styles.listItemDivider} />
                         </View>
                       </TouchableOpacity>
