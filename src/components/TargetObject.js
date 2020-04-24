@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+
 import { Actions } from 'react-native-router-flux';
 import { calc } from '../lib/utils';
 
@@ -56,49 +56,49 @@ export default class extends React.Component {
 
   }
 
+  // eslint-disable-next-line class-methods-use-this
   closeDrawer() {
-    console.log(1);
     Actions.drawerClose();
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.closeDrawer}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              style={[styles.flex0, styles.closeBtn]}
 
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={[styles.flex0, styles.closeBtn]}
+            onPress={this.closeDrawer}
+          >
+
+            <Icon
+              name="close"
+              size={calc(18)}
+              color="#45AEFF"
+              style={{ lineHeight: calc(48), textAlign: 'center' }}
+            />
+
+
+          </TouchableOpacity>
+
+
+          <View style={{ flex: 1 }}>
+            <Text style={{
+              color: '#45AEFF', lineHeight: calc(48), fontSize: calc(18), fontWeight: 'bold',
+            }}
             >
-
-              <Icon
-                name="close"
-                size={calc(18)}
-                color="#45AEFF"
-                style={{ lineHeight: calc(48), textAlign: 'center' }}
-              />
-
-
-            </TouchableOpacity>
-
-
-            <View style={{ flex: 1 }}>
-              <Text style={{
-                color: '#45AEFF', lineHeight: calc(48), fontSize: calc(18), fontWeight: 'bold',
-              }}
-              >
-                邓州市市委市政府
-              </Text>
-            </View>
-
-
-            <TouchableOpacity style={[styles.flex0, styles.rightBtn]}>
-
-              <Text style={{ color: '#45AEFF', lineHeight: calc(48), fontSize: calc(18) }}>兵力部署</Text>
-
-            </TouchableOpacity>
+              邓州市市委市政府
+            </Text>
           </View>
-        </TouchableOpacity>
+
+
+          <TouchableOpacity style={[styles.flex0, styles.rightBtn]}>
+
+            <Text style={{ color: '#45AEFF', lineHeight: calc(48), fontSize: calc(18) }}>兵力部署</Text>
+
+          </TouchableOpacity>
+        </View>
+
 
         <View style={{ flex: 1 }}>
           <TargetObjectTabs>

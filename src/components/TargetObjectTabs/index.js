@@ -6,6 +6,7 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
+  PixelRatio,
 } from 'react-native';
 
 import PropTypes from 'prop-types';
@@ -81,6 +82,10 @@ class TargetObjectTabs extends Component {
             >
               {data.item.title}
             </Text>
+            <View style={{
+              position: 'absolute', height: calc(3), width: tabW, bottom: 0, left: 0, backgroundColor: '#45AEFF',
+            }}
+            />
           </View>
         </TouchableOpacity>
       );
@@ -121,11 +126,11 @@ class TargetObjectTabs extends Component {
   // 滑屏动作结尾
   _onAnimationEnd = (e) => {
     const offset = e.nativeEvent.contentOffset.x;
-    console.log(offset);
     if (offset < 0) {
       return;
     }
-    const currentX = Math.floor(offset / WIDTH);
+    // 300是专门针对M6平板的值,这里的问题我没有搞明白，目前
+    const currentX = Math.floor(offset / 300);
     this._tabScrollToIndex(currentX);
   }
 
