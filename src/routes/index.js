@@ -8,14 +8,14 @@ import LeafletMap from '../components/LeafletMap';
 
 
 import TargetObject from '../components/TargetObject';
+import { calc } from '../lib/utils';
 
 
 const Index = (
   <Stack key="root" hideNavBar>
-
     <Drawer
-      hideNavBar
       key="targetObject"
+      drawerWidth={calc(460)}
       onExit={() => {
         console.log('Drawer closed');
       }}
@@ -23,6 +23,8 @@ const Index = (
         console.log('Drawer opened');
       }}
       contentComponent={TargetObject}
+      drawerPosition="right"
+      drawerLockMode="unlocked"
     >
       <Scene hideNavBar key="home" component={LeafletMap} />
     </Drawer>

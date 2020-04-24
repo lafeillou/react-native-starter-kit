@@ -5,8 +5,9 @@ import {
   StyleSheet, View, Text, TouchableOpacity, Switch, ScrollView, PixelRatio,
 } from 'react-native';
 
-// 接口
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
+
+// 接口
 
 import { calc } from '../../lib/utils';
 
