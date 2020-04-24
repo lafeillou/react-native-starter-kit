@@ -78,12 +78,11 @@ export default class TargetSubPanel extends Component {
   static getDerivedStateFromProps(nextProps) {
     let isAllOn = false;
     const { list } = nextProps;
-
     isAllOn = list.every((o) => o.isOn);
     if (nextProps.list) {
       return {
         targetList: nextProps.list,
-        currentFirstIndex: -1,
+        currentFirstIndex: nextProps.selectedIndex,
         title: nextProps.title,
         isAllOn,
       };
@@ -230,7 +229,7 @@ export default class TargetSubPanel extends Component {
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>
 
-            <View style={{
+            {/* <View style={{
               position: 'absolute', height: calc(48), right: 0, top: 0, alignItems: 'center',
             }}
             >
@@ -241,7 +240,7 @@ export default class TargetSubPanel extends Component {
                 value={isAllOn}
                 onValueChange={this.switchTopSwitchValue}
               />
-            </View>
+            </View> */}
           </View>
 
           <View style={styles.body}>
@@ -259,7 +258,7 @@ export default class TargetSubPanel extends Component {
                           {value.targetName}
                         </Text>
 
-                        <View style={{
+                        {/* <View style={{
                           flex: 1, alignItems: 'center', width: calc(56), height: calc(56), position: 'absolute', right: calc(16), top: 0,
                         }}
                         >
@@ -270,7 +269,7 @@ export default class TargetSubPanel extends Component {
                             value={value.isOn}
                             onValueChange={() => { this.switchFirstSwitchValue((index)); }}
                           />
-                        </View>
+                        </View> */}
                         <View style={styles.listItemDivider} />
                       </View>
                     </TouchableOpacity>
@@ -293,6 +292,7 @@ TargetSubPanel.propTypes = {
   list: PropTypes.array, // 为什么eslint 提示有问题
   title: PropTypes.string,
   onSelected: PropTypes.func,
+  selectedIndex: PropTypes.number,
 };
 
 TargetSubPanel.defaultProps = {

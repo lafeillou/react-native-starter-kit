@@ -81,6 +81,8 @@ export default class TargetPanel extends Component {
       childList: [],
       // 二级列表标题：
       title: '',
+      // 二级列表当前选中的节点索引
+      selectedIndex: -1,
     };
 
     this.switchTopSwitchValue = this.switchTopSwitchValue.bind(this);
@@ -176,6 +178,7 @@ export default class TargetPanel extends Component {
       currentFirstIndex: index,
       childList: targetList[index].targets,
       title: targetList[index].targetClassify.classifyName,
+      selectedIndex: -1,
     });
   }
 
@@ -199,7 +202,7 @@ export default class TargetPanel extends Component {
 
   // 子组件传来状态,某个子节点被选中状态
   childListItemSelected(index, bool) {
-    const { targetList, currentFirstIndex } = this.state;
+    const { targetList, currentFirstIndex, selectedIndex } = this.state;
     targetList[currentFirstIndex].targets.forEach((o, i) => {
       if (i === index) {
         // eslint-disable-next-line no-param-reassign
@@ -222,12 +225,13 @@ export default class TargetPanel extends Component {
     this.setState({
       targetList,
       isAllOn,
+      selectedIndex: index,
     });
   }
 
   render() {
     const {
-      isAllOn, targetList, currentFirstIndex, showTargetSubPanel,
+      isAllOn, targetList, currentFirstIndex, showTargetSubPanel, selectedIndex,
       currentWidth, childList, title,
     } = this.state;
     const { isVisible } = this.props;
@@ -248,7 +252,7 @@ export default class TargetPanel extends Component {
               </TouchableOpacity>
               <Text style={styles.title}>目标控制器</Text>
 
-              <View style={{
+              {/* <View style={{
                 position: 'absolute', height: calc(48), right: calc(4), top: 0, alignItems: 'center',
               }}
               >
@@ -259,7 +263,7 @@ export default class TargetPanel extends Component {
                   value={isAllOn}
                   onValueChange={this.switchTopSwitchValue}
                 />
-              </View>
+              </View> */}
             </View>
 
             <View style={styles.body}>
@@ -307,6 +311,7 @@ export default class TargetPanel extends Component {
             onSelected={this.childListItemSelected}
             list={childList}
             title={title}
+            selectedIndex={selectedIndex}
             style={{ flex: 1 }}
           />
         </View>
