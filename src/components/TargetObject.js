@@ -157,7 +157,7 @@ class TargetObject extends React.Component {
               {currentTarget.mediaList.map((o) =>
               // 视频目前只支持一个
                 (
-                  <TouchableOpacity onPress={() => { this.togglePlay(); }}>
+                  <TouchableOpacity onPress={() => { this.togglePlay(); }} key={o.fileId}>
                     <Video
                       source={{ uri: `http://192.168.8.154/${o.fullPath}` }} // Can be a URL or a local file.
                       key={o.fileId}

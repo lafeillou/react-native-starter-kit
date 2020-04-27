@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  StyleSheet, View, Text, Dimensions, TouchableOpacity, Switch, ScrollView, PixelRatio,
+  StyleSheet, View, Text, Dimensions, TouchableOpacity, Switch, ScrollView, PixelRatio, Image,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
@@ -11,6 +11,8 @@ import TargetSubPanel from '../TargetSubPanel';
 import { getTargetTreeList } from '../../api';
 
 import { calc } from '../../lib/utils';
+
+import ImageIconMap from '../ImageIcon';
 
 const styles = StyleSheet.create({
   container: {
@@ -273,9 +275,16 @@ export default class TargetPanel extends Component {
                     (value, index) => (
                       <TouchableOpacity style={styles.listItem} onPress={() => { this.pressTargetItem(index); }} key={`${value.targetClassify.classifyCode}_${value.targetClassify.classifyOrder}`}>
                         <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
-                          <Icon name="shiweizhengfu_2" size={calc(24)} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} />
+                          {/* <Icon name="shiweizhengfu_2" size={calc(24)} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} /> */}
+
+                          <Image
+                            source={ImageIconMap[value.targetClassify.classifyCode]}
+                            style={{
+                              width: calc(40), height: calc(40), position: 'absolute', left: calc(20), top: calc(10),
+                            }}
+                          />
                           <Text style={{
-                            color: '#fff', fontSize: calc(15), lineHeight: calc(56), marginLeft: calc(56),
+                            color: '#fff', fontSize: calc(24), lineHeight: calc(56), marginLeft: calc(70),
                           }}
                           >
                             {value.targetClassify.classifyName}

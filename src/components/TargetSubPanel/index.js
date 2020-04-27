@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  StyleSheet, View, Text, TouchableOpacity, Switch, ScrollView, PixelRatio, ToastAndroid,
+  StyleSheet, View, Text, TouchableOpacity, Switch, ScrollView, PixelRatio, ToastAndroid, Image,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 
-// 接口
 import { connect } from 'react-redux';
+import ImageIconMap from '../ImageIcon';
+
+// 接口
 import { sendCommandToRemote } from '../../api/index';
 import { calc } from '../../lib/utils';
 
@@ -192,7 +194,7 @@ class TargetSubPanel extends Component {
         ToastAndroid.showWithGravity(
           res.data.message,
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.TOP,
         );
       }
     });
@@ -256,9 +258,17 @@ class TargetSubPanel extends Component {
                   (value, index) => (
                     <TouchableOpacity style={styles.listItem} onPress={() => { this.selectItem(index); }} key={`${value.classifyCode}_${value.targetName}_${value.id}`}>
                       <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
-                        <Icon name="shiweizhengfu_2" size={24} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} />
+                        {/* <Icon name="shiweizhengfu_2" size={24} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} /> */}
+
+                        <Image
+                          source={ImageIconMap[value.classifyCode]}
+                          style={{
+                            width: calc(40), height: calc(40), position: 'absolute', left: calc(20), top: calc(8),
+                          }}
+                        />
+
                         <Text style={{
-                          color: '#fff', fontSize: calc(15), lineHeight: calc(56), marginLeft: calc(56),
+                          color: '#fff', fontSize: calc(20), lineHeight: calc(56), marginLeft: calc(70),
                         }}
                         >
                           {value.targetName}
