@@ -7,11 +7,13 @@ import Config from '../constants/config';
  * Axios defaults
  */
 
-
-Config.apiBaseUrl().then((res) => {
-  axios.defaults.baseURL = `http://${res}`;
-});
-
+// Config.apiBaseUrl().then((res) => {
+//   axios.defaults.baseURL = `http://${res}`;
+// });
+(async () => {
+  const url = await Config.apiBaseUrl();
+  axios.defaults.baseURL = `http://${url}`;
+})();
 // Headers
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.headers.common.Accept = 'application/json';
@@ -28,8 +30,9 @@ axios.interceptors.request.use(
     if (config.headers && (config.headers['content-type'] === 'application/x-www-form-urlencoded')) {
       config.data = qs.stringify(config.data);
     }
+    const url = await Config.apiBaseUrl();
     Object.assign(config, {
-      url: inputConfig.baseURL + inputConfig.url,
+      url: `http://${url}${inputConfig.url}`,
       timeout: 60000,
     });
 
