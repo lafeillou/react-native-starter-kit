@@ -85,11 +85,11 @@ class TargetObject extends React.Component {
   }
 
   onBuffer(e) {
-    console.log(e);
+    // console.log(e);
   }
 
   videoError(e) {
-    console.log(e);
+    // console.log(e);
   }
 
   togglePlay() {

@@ -2,6 +2,7 @@
 export default {
   namespace: 'app',
   state: {
+    globalRemoteUrl: '',
     currentTarget: {
       id: '',
       classifyCode: '',
@@ -29,6 +30,7 @@ export default {
       mediaList: [],
       videoPicturePath: '',
     },
+    // 目前只支持一个视频
     videoPause: true,
   },
 
@@ -44,6 +46,12 @@ export default {
    * Reducers
    */
   reducers: {
+    setGlobalRemoteUrl(state, payload) {
+      return {
+        ...state,
+        globalRemoteUrl: payload,
+      };
+    },
     setCurrentTarget(state, payload) {
       return {
         ...state,

@@ -12,6 +12,7 @@ import Icon2 from 'yofc-react-native-vector-icons/Ionicons';
 // import PropTypes  from 'prop-types';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
 import { calc } from '../lib/utils';
 
 import TargetPanel from './TargetPanel';
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
 });
 
 
-export default class LeafLetMap extends Component {
+class LeafLetMap extends Component {
   webref = null;
 
   constructor(props) {
@@ -259,7 +260,7 @@ export default class LeafLetMap extends Component {
 
     render() {
       const { showTargetPanel, currentLayerName, currentFocusTarget } = this.state;
-
+      const { globalRemoteUrl } = this.props;
       return (
 
         <View style={styles.container}>
@@ -268,7 +269,7 @@ export default class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            source={{ uri: ' http://10.90.131.187:8080/' }}
+            source={{ uri: `http://${globalRemoteUrl}/webview_map/` }}
           />
           {/* 菜单按钮 */}
           <TouchableOpacity style={[styles.btn, styles.pos1]} onPress={this.openTargetPanel}>
@@ -382,3 +383,26 @@ LeafLetMap.childContextTypes = {
   setCurrentFocusTarget: PropTypes.func,
   getCurrentFocusTarget: PropTypes.func,
 };
+
+
+LeafLetMap.propTypes = {
+  globalRemoteUrl: PropTypes.string,
+
+};
+
+LeafLetMap.defaultProps = {
+  globalRemoteUrl: '',
+
+};
+
+
+const mapStateToProps = (state) => ({
+  globalRemoteUrl: state.app.globalRemoteUrl,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(LeafLetMap);

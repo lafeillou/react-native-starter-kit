@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 
 import {
@@ -12,9 +12,16 @@ import { Actions } from 'react-native-router-flux';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
+import Icon2 from 'yofc-react-native-vector-icons/Ionicons';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { login } from '../api';
 
-// import { calc } from '../lib/utils';
+
+// import { TouchableOpacity } from 'react-native-gesture-handler';
+
+
+import { calc } from '../lib/utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,17 +36,20 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       userName: 'mrbird',
       userPwd: '1234qwer',
+      remoteIp: '192.168.8.154',
+      showRemoteIp: false,
     };
     this.closeModal = this.closeModal.bind(this);
 
     // this._afterAnimation = this._afterAnimation.bind(this);
+    this.showRemoteIp = this.showRemoteIp.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +57,12 @@ export default class extends React.Component {
   }
 
   closeModal() {
-    const { userName, userPwd } = this.state;
+    const { userName, userPwd, remoteIp } = this.state;
+    const { setGlobalRemoteUrl } = this.props;
+    AsyncStorage.setItem('@GlobalRemoteUrl', remoteIp);
+    setGlobalRemoteUrl(remoteIp);
+
+
     login({
       username: userName,
       password: userPwd,
@@ -60,8 +75,18 @@ export default class extends React.Component {
     });
   }
 
+  showRemoteIp() {
+    const { showRemoteIp } = this.state;
+    this.setState({
+      showRemoteIp: !showRemoteIp,
+    });
+  }
+
+
   render() {
-    const { userName, userPwd } = this.state;
+    const {
+      userName, userPwd, remoteIp, showRemoteIp,
+    } = this.state;
     return (
       <View
         style={[
@@ -72,7 +97,7 @@ export default class extends React.Component {
         <View
           style={{
             width: 350,
-            height: 250,
+            // height: 250,
             backgroundColor: '#000',
             borderWidth: 2,
             borderColor: '#fff',
@@ -81,6 +106,19 @@ export default class extends React.Component {
         >
 
           <Form style={{ padding: 20 }}>
+            <TouchableOpacity style={{ position: 'absolute', right: -2, top: -2 }} onPress={this.showRemoteIp}>
+              <View style={{
+                paddingTop: calc(10), paddingBottom: calc(10), paddingLeft: calc(10), paddingRight: calc(10), borderWidth: 2, borderColor: '#fff', borderRadius: 6, borderTopLeftRadius: 0, borderBottomRightRadius: 0,
+              }}
+              >
+                <Icon2
+                  name="ios-settings"
+                  size={calc(30)}
+                  color="#45AEFF"
+                  style={{ lineHeight: calc(30), textAlign: 'center' }}
+                />
+              </View>
+            </TouchableOpacity>
             <Text style={{
               fontSize: 27, textAlign: 'center', color: '#fff', opacity: 1,
             }}
@@ -106,6 +144,21 @@ export default class extends React.Component {
                 onChangeText={(text) => { this.setState({ userPwd: text }); }}
               />
             </Item>
+
+            {showRemoteIp && (
+            <Item inlineLabel last>
+              <Icon name="ios-link" type="Ionicons" style={{ color: '#fff' }} />
+              <Label style={{ color: '#fff' }}>   IP  </Label>
+              <Input
+                style={{ color: '#fff' }}
+                value={remoteIp}
+                onChangeText={(text) => { this.setState({ remoteIp: text }); }}
+                returnKeyType="done"
+                clearButtonMode="always"
+              />
+            </Item>
+            )}
+
             <Button full style={{ marginTop: 20 }} onPress={this.closeModal}>
               <Text style={{ fontSize: 20, color: '#fff' }}>登 录</Text>
             </Button>
@@ -115,3 +168,22 @@ export default class extends React.Component {
     );
   }
 }
+
+Login.defaultProps = {
+  setGlobalRemoteUrl: () => {},
+};
+
+Login.propTypes = {
+  setGlobalRemoteUrl: PropTypes.func,
+
+};
+
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  setGlobalRemoteUrl: dispatch.app.setGlobalRemoteUrl,
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

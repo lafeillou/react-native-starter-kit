@@ -6,7 +6,11 @@ import Config from '../constants/config';
 /**
  * Axios defaults
  */
-axios.defaults.baseURL = Config.apiBaseUrl;
+
+
+Config.apiBaseUrl().then((res) => {
+  axios.defaults.baseURL = `http://${res}`;
+});
 
 // Headers
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -19,6 +23,7 @@ axios.interceptors.request.use(
 
   async (inputConfig) => {
     const config = inputConfig;
+    // console.log(config);
 
     if (config.headers && (config.headers['content-type'] === 'application/x-www-form-urlencoded')) {
       config.data = qs.stringify(config.data);
