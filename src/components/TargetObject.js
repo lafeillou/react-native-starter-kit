@@ -100,7 +100,7 @@ class TargetObject extends React.Component {
   }
 
   render() {
-    const { currentTarget } = this.props;
+    const { currentTarget, globalRemoteUrl } = this.props;
     const { videoPaused } = this.state;
     return (
       <View style={styles.container}>
@@ -149,7 +149,7 @@ class TargetObject extends React.Component {
             <View style={{ flex: 1 }}>
 
               {currentTarget.pictureList.map((o) => (
-                <Image source={{ uri: `http://192.168.8.154/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
+                <Image source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
               ))}
 
             </View>
@@ -159,7 +159,7 @@ class TargetObject extends React.Component {
                 (
                   <TouchableOpacity onPress={() => { this.togglePlay(); }} key={o.fileId}>
                     <Video
-                      source={{ uri: `http://192.168.8.154/${o.fullPath}` }} // Can be a URL or a local file.
+                      source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} // Can be a URL or a local file.
                       key={o.fileId}
                       ref={(ref) => {
                         this.player = ref;
@@ -190,6 +190,7 @@ TargetObject.propTypes = {
 const mapStateToProps = (state) => ({
   currentTarget: state.app.currentTarget,
   videoPause: state.app.videoPause,
+  globalRemoteUrl: state.app.globalRemoteUrl,
 });
 
 const mapDispatchToProps = (dispatch) => ({

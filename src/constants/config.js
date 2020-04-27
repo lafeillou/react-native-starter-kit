@@ -13,11 +13,6 @@ export default {
   // Date Format
   dateFormat: 'Do MMM YYYY',
 
-  // API
-  // apiBaseUrl: isDevEnv
-  //   ? 'http://192.168.8.154'
-  //   : 'http://192.168.8.154',
-
   async apiBaseUrl() {
     let globalRemoteUrl = '';
     globalRemoteUrl = await AsyncStorage.getItem('@GlobalRemoteUrl');
