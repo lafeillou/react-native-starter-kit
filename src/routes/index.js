@@ -13,7 +13,7 @@ import { calc } from '../lib/utils';
 
 const Index = (
   <Stack key="root" hideNavBar>
-    <Drawer
+    {/* <Drawer
       key="targetObject"
       drawerWidth={calc(460)}
       onExit={() => {
@@ -25,9 +25,9 @@ const Index = (
       contentComponent={TargetObject}
       drawerPosition="right"
       drawerLockMode="unlocked"
-    >
-      <Scene hideNavBar key="home" component={LeafletMap} />
-    </Drawer>
+    > */}
+    <Scene hideNavBar key="home" component={LeafletMap} />
+    {/* </Drawer> */}
   </Stack>
 );
 

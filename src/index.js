@@ -11,11 +11,16 @@ import { Root, StyleProvider } from 'native-base';
 import getTheme from '../native-base-theme/components';
 import theme from '../native-base-theme/variables/commonColor';
 
-import Routes from './routes/index';
+// import Routes from './routes/index';
 // import TargetObjectDrawerRoutes from './routes/targetObjectDrawer';
 import Login from './components/Login';
 
 import Loading from './components/UI/Loading';
+
+import LightboxPlaceholder from './components/LightboxPlaceholder';
+import TargetObjectLightboxWrap from './components/TargetObjectLightboxWrap';
+
+import LeafletMap from './components/LeafletMap';
 
 class App extends React.Component {
   constructor() {
@@ -45,11 +50,17 @@ class App extends React.Component {
 
                 <Overlay key="overlay">
                   <Modal key="modal" hideNavBar>
-                    {/* <Lightbox key="lightbox"> */}
-                    <Scene hideNavBar key="login" component={Login} />
-                    {Routes}
-                    {/* {TargetObjectDrawerRoutes} */}
-                    {/* </Lightbox> */}
+                    <Lightbox key="lightbox">
+
+
+                      <Stack key="root" hideNavBar>
+                        <Scene hideNavBar key="login" component={Login} />
+                        <Scene hideNavBar key="home" component={LeafletMap} />
+                      </Stack>
+
+                      <Scene hideNavBar key="lightbox_placeholder" component={LightboxPlaceholder} />
+                      <Scene hideNavBar key="targetObject" component={TargetObjectLightboxWrap} />
+                    </Lightbox>
                   </Modal>
                 </Overlay>
               </Router>

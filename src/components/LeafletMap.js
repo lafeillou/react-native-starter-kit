@@ -195,7 +195,7 @@ class LeafLetMap extends Component {
     // 打开目标点信息展示面板
     // eslint-disable-next-line class-methods-use-this
     showTargetObjectPanel() {
-      Actions.drawerOpen();
+      Actions.targetObject();
     }
 
     openTargetPanel() {

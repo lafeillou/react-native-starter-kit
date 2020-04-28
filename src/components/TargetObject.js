@@ -71,6 +71,7 @@ class TargetObject extends React.Component {
     this.onBuffer = this.onBuffer.bind(this);
     this.videoError = this.videoError.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
+    this.openLightbox = this.openLightbox.bind(this);
   }
 
   componentDidMount() {
@@ -81,7 +82,8 @@ class TargetObject extends React.Component {
 
   // eslint-disable-next-line class-methods-use-this
   closeDrawer() {
-    Actions.drawerClose();
+    // Actions.drawerClose();
+    Actions.pop();
   }
 
   onBuffer(e) {
@@ -97,6 +99,10 @@ class TargetObject extends React.Component {
     this.setState({
       videoPaused: !videoPaused,
     });
+  }
+
+  openLightbox() {
+    Actions.lightbox_placeholder();
   }
 
   render() {
@@ -132,7 +138,7 @@ class TargetObject extends React.Component {
           </View>
 
 
-          <TouchableOpacity style={[styles.flex0, styles.rightBtn]}>
+          <TouchableOpacity style={[styles.flex0, styles.rightBtn]} onPress={this.openLightbox}>
 
             <Text style={{ color: '#45AEFF', lineHeight: calc(48), fontSize: calc(18) }}>兵力部署</Text>
 
@@ -184,6 +190,7 @@ class TargetObject extends React.Component {
 
 TargetObject.propTypes = {
   currentTarget: PropTypes.object,
+  globalRemoteUrl: PropTypes.string,
 };
 
 
