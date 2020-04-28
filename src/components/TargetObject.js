@@ -12,6 +12,7 @@ import { calc } from '../lib/utils';
 
 import TargetObjectTabs from './TargetObjectTabs';
 
+// import Lightbox from './BaseLightbox';
 
 const styles = StyleSheet.create({
   container: {
@@ -102,7 +103,11 @@ class TargetObject extends React.Component {
   }
 
   openLightbox() {
-    Actions.lightbox_placeholder();
+    const { setCurrentModal } = this.props;
+    setCurrentModal({
+      isVisible: true,
+      componentName: '',
+    });
   }
 
   render() {
@@ -148,8 +153,18 @@ class TargetObject extends React.Component {
 
         <View style={{ flex: 1 }}>
           <TargetObjectTabs>
-            <View style={{ flex: 1 }}>
-              {currentTarget.targetDesc && (<Text style={{ color: '#fff', lineHeight: calc(20) * 1.5 }}>{currentTarget.targetDesc}</Text>)}
+            <View style={{
+              flex: 1,
+            }}
+            >
+              {currentTarget.targetDesc && (
+              <Text style={{
+                color: '#fff', lineHeight: calc(20) * 1.5, paddingLeft: calc(20), paddingTop: calc(20), paddingRight: calc(20), paddingBottom: calc(20),
+              }}
+              >
+                {currentTarget.targetDesc}
+              </Text>
+              )}
 
             </View>
             <View style={{ flex: 1 }}>
@@ -191,6 +206,7 @@ class TargetObject extends React.Component {
 TargetObject.propTypes = {
   currentTarget: PropTypes.object,
   globalRemoteUrl: PropTypes.string,
+  setCurrentModal: PropTypes.func,
 };
 
 
@@ -201,7 +217,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // toggleVideoPause:
+  setCurrentModal: dispatch.app.setCurrentModal,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TargetObject);

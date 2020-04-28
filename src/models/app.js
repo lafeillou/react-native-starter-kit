@@ -32,6 +32,11 @@ export default {
     },
     // 目前只支持一个视频
     videoPause: true,
+    // 弹窗是否打开，已经弹窗的内容组件名称
+    currentModal: {
+      isVisible: false,
+      componentName: '',
+    },
   },
 
   /**
@@ -46,6 +51,12 @@ export default {
    * Reducers
    */
   reducers: {
+    setCurrentModal(state, payload) {
+      return {
+        ...state,
+        currentModal: payload,
+      };
+    },
     setGlobalRemoteUrl(state, payload) {
       return {
         ...state,

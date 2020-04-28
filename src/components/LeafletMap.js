@@ -19,9 +19,10 @@ import TargetPanel from './TargetPanel';
 
 import clientMethod from '../lib/postJsCode';
 
+// import Lightbox from './BaseLightbox';
+
 
 const patchPostMessageJsCode = `(${String(clientMethod)})(); true;`;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -259,7 +260,9 @@ class LeafLetMap extends Component {
     }
 
     render() {
-      const { showTargetPanel, currentLayerName, currentFocusTarget } = this.state;
+      const {
+        showTargetPanel, currentLayerName, currentFocusTarget,
+      } = this.state;
       const { globalRemoteUrl } = this.props;
       return (
 
@@ -370,6 +373,8 @@ class LeafLetMap extends Component {
 
 
           <TargetPanel isVisible={showTargetPanel} closeFn={this.closeTargetPanel} />
+
+
         </View>
 
 
