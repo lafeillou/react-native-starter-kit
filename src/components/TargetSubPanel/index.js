@@ -174,6 +174,11 @@ class TargetSubPanel extends Component {
     // 选中目标数据
     // console.log('=====================目标数据==========================');
     // console.log(data[index]);
+
+    console.log('=================当前聚焦的点参考================');
+    console.log(data[index]);
+
+
     this.dispatchGeoJsonDataToH5(data[index]);
     // 向远端发送指令
     sendCommandToRemote({

@@ -55,8 +55,6 @@ class App extends React.Component {
                         <Scene hideNavBar key="home" component={LeafletMap} />
                       </Stack>
                       <Scene hideNavBar key="targetObject" component={TargetObjectLightboxWrap} />
-                      {/* <Scene hideNavBar key="lightbox_placeholder"
-                      component={LightboxPlaceholder} /> */}
                     </Lightbox>
                   </Modal>
                 </Overlay>

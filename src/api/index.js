@@ -40,3 +40,15 @@ export function sendCommandToRemote(data) {
     data,
   });
 }
+
+/**
+ * 获取兵力部署列表
+ */
+
+export function getTroopDispositionList(params) {
+  return axios({
+    method: 'get',
+    url: '/api/v1/sandtable_target/getTroopsByTargetIdPage',
+    params,
+  });
+}

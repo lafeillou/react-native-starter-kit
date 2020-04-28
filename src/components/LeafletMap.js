@@ -142,6 +142,8 @@ class LeafLetMap extends Component {
     this.setCurrentFocusTarget = this.setCurrentFocusTarget.bind(this);
     this.getCurrentFocusTarget = this.getCurrentFocusTarget.bind(this);
     this.showTargetObjectPanel = this.showTargetObjectPanel.bind(this);
+    this.focusToPoint = this.focusToPoint.bind(this);
+    this.dispatchGeoJsonDataToH5 = this.dispatchGeoJsonDataToH5.bind(this);
   }
 
 
@@ -259,6 +261,25 @@ class LeafLetMap extends Component {
       this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
     }
 
+
+    dispatchGeoJsonDataToH5(data) {
+      const json = {
+        callback: 'window.Vue.$emit("dispatchGeoJsonDataToH5", {data: data.data})',
+        args: {
+          data: JSON.stringify(data),
+        },
+      };
+
+      this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+    }
+
+    focusToPoint() {
+      const { currentTarget } = this.props;
+      console.log('=================当前聚焦的点================');
+      console.log(currentTarget);
+      this.dispatchGeoJsonDataToH5(currentTarget);
+    }
+
     render() {
       const {
         showTargetPanel, currentLayerName, currentFocusTarget,
@@ -359,10 +380,10 @@ class LeafLetMap extends Component {
             <View style={styles.CurrentFocus__leftBtn}>
               <Icon name="location" size={calc(24)} color="white" />
             </View>
-            <View style={styles.CurrentFocus__midBtn}>
+            <TouchableOpacity style={styles.CurrentFocus__midBtn} onPress={this.focusToPoint}>
               <Text style={{ color: '#fff', fontSize: calc(18), lineHeight: calc(48) }} ellipsizeMode="tail" numberOfLines={1}>{currentFocusTarget.targetName}</Text>
-            </View>
-            <TouchableOpacity style={styles.CurrentFocus__rightBtn} onPress={() => { this.showTargetObjectPanel(); }}>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.CurrentFocus__rightBtn} onPress={this.showTargetObjectPanel}>
               <View>
                 <Icon2 name="ios-information-circle" size={calc(24)} color="#e55c58" />
               </View>
@@ -393,7 +414,7 @@ LeafLetMap.childContextTypes = {
 
 LeafLetMap.propTypes = {
   globalRemoteUrl: PropTypes.string,
-
+  currentTarget: PropTypes.object,
 };
 
 LeafLetMap.defaultProps = {
@@ -404,6 +425,7 @@ LeafLetMap.defaultProps = {
 
 const mapStateToProps = (state) => ({
   globalRemoteUrl: state.app.globalRemoteUrl,
+  currentTarget: state.app.currentTarget,
 });
 
 const mapDispatchToProps = (dispatch) => ({

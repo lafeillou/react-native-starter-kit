@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, StyleSheet, Animated, Dimensions, Button, Text, TouchableOpacity,
+  View, StyleSheet, Animated, Dimensions, Button, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import { calc } from '../lib/utils';
+
+
+import { getTroopDispositionList } from '../api/index';
 
 const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
@@ -25,6 +28,35 @@ const styles = StyleSheet.create({
     height: calc(48),
     backgroundColor: '#212e4c',
   },
+  body: {
+    flex: 1,
+    // backgroundColor: 'red',
+    paddingLeft: calc(20),
+    paddingRight: calc(20),
+    paddingTop: calc(20),
+    paddingBottom: calc(20),
+  },
+  tableHeader: {
+    height: calc(48),
+    flexDirection: 'row',
+    backgroundColor: '#212e4c',
+  },
+  tableHeaderItem: {
+    flex: 1,
+    lineHeight: calc(48),
+    color: '#fff',
+    textAlign: 'center',
+  },
+  tableContent: {
+    flex: 1,
+    // backgroundColor: 'red',
+  },
+  listItem: {
+    height: calc(48),
+    flex: 1,
+    flexDirection: 'row',
+    // backgroundColor: 'red',
+  },
 });
 
 class BaseLightbox extends Component {
@@ -33,6 +65,7 @@ class BaseLightbox extends Component {
 
     this.state = {
       opacity: new Animated.Value(0),
+      troopDispositionList: [],
     };
 
     this.closeModal = this.closeModal.bind(this);
@@ -40,12 +73,27 @@ class BaseLightbox extends Component {
   }
 
   componentDidMount() {
+    const { currentTarget } = this.props;
     const { opacity } = this.state;
 
     Animated.timing(opacity, {
       duration: 500,
       toValue: 1,
     }).start();
+
+    // 加载兵力部署列表的数据
+    getTroopDispositionList({
+      targetId: currentTarget.id,
+      pageNum: 1,
+      pageSize: 1000,
+    }).then((res) => {
+      console.log(res);
+      if (res.data.status === 200) {
+        this.setState({
+          troopDispositionList: res.data.data.records,
+        });
+      }
+    });
   }
 
 
@@ -57,6 +105,8 @@ class BaseLightbox extends Component {
     const width = horizontalPercent
       ? deviceWidth * horizontalPercent
       : deviceWidth;
+
+    const { troopDispositionList } = this.state;
     return (
       <View
         style={{
@@ -85,6 +135,35 @@ class BaseLightbox extends Component {
               style={{ lineHeight: calc(48), textAlign: 'center' }}
             />
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.body}>
+          <View style={styles.tableHeader}>
+
+            <Text style={styles.tableHeaderItem}>姓名</Text>
+            <Text style={styles.tableHeaderItem}>联系电话</Text>
+            <Text style={styles.tableHeaderItem}>组织岗位</Text>
+            <Text style={styles.tableHeaderItem}>所在分队</Text>
+            <Text style={styles.tableHeaderItem}>家庭住址</Text>
+          </View>
+
+          <View style={styles.tableContent}>
+            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+
+              {troopDispositionList.map((o, index) => (
+
+                <View style={[styles.listItem, { backgroundColor: (index + 1) % 2 === 0 ? '#172545' : 'transparent' }]} key={o.id}>
+                  <Text style={styles.tableHeaderItem}>{o.name}</Text>
+                  <Text style={styles.tableHeaderItem}>{o.telephone}</Text>
+                  <Text style={styles.tableHeaderItem}>{o.orgPost}</Text>
+                  <Text style={styles.tableHeaderItem}>{o.contingentName}</Text>
+                  <Text style={styles.tableHeaderItem}>{o.homeAddress}</Text>
+                </View>
+              ))}
+
+            </ScrollView>
+          </View>
+
         </View>
       </View>
     );
@@ -119,14 +198,15 @@ class BaseLightbox extends Component {
 }
 
 BaseLightbox.propTypes = {
-  children: PropTypes.any,
+  // children: PropTypes.any,
   horizontalPercent: PropTypes.number,
   verticalPercent: PropTypes.number,
-  setCurrentModal: PropTypes.object,
+  setCurrentModal: PropTypes.func,
+  currentTarget: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
-
+  currentTarget: state.app.currentTarget,
 });
 
 const mapDispatchToProps = (dispatch) => ({
