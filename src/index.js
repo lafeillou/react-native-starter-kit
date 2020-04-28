@@ -47,19 +47,16 @@ class App extends React.Component {
           <PersistGate loading={<Loading />} persistor={persistor}>
             <StyleProvider style={getTheme(theme)}>
               <Router>
-
                 <Overlay key="overlay">
                   <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox">
-
-
                       <Stack key="root" hideNavBar>
                         <Scene hideNavBar key="login" component={Login} />
                         <Scene hideNavBar key="home" component={LeafletMap} />
                       </Stack>
-
-                      <Scene hideNavBar key="lightbox_placeholder" component={LightboxPlaceholder} />
                       <Scene hideNavBar key="targetObject" component={TargetObjectLightboxWrap} />
+                      {/* <Scene hideNavBar key="lightbox_placeholder"
+                      component={LightboxPlaceholder} /> */}
                     </Lightbox>
                   </Modal>
                 </Overlay>
