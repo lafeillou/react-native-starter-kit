@@ -2,7 +2,7 @@ import 'react-native-get-random-values';
 import React, { Component } from 'react';
 
 import {
-  StyleSheet, View, Text, Dimensions, TouchableOpacity,
+  StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid,
 } from 'react-native';
 
 import { WebView } from 'react-native-webview';
@@ -20,7 +20,7 @@ import TargetPanel from './TargetPanel';
 import clientMethod from '../lib/postJsCode';
 
 // import Lightbox from './BaseLightbox';
-
+import { sendCommandToRemote } from '../api/index';
 
 const patchPostMessageJsCode = `(${String(clientMethod)})(); true;`;
 
@@ -177,6 +177,28 @@ class LeafLetMap extends Component {
         case 'getUser':
           this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
           break;
+        case 'openRightTabs':
+          this.setCurrentFocusTarget({ ...params });
+          this.showTargetObjectPanel();
+          // 发送远程指令
+          sendCommandToRemote({
+            targetId: params.id,
+            eventSource: 'PAD',
+            eventType: 'DESCRIBE',
+            eventAction: 'SWITCH',
+          }).then((res) => {
+            console.log('=============指令调用结果==================');
+            console.log(res);
+            if (res.status === 200) {
+              ToastAndroid.showWithGravity(
+                res.data.message,
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP,
+              );
+            }
+          });
+          this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+          break;
         default:
           break;
       }
@@ -294,7 +316,7 @@ class LeafLetMap extends Component {
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
             source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html` }}
-            // source={{ uri: 'http://10.90.131.187:8080/' }}
+            // source={{ uri: 'http://192.168.3.31:8080/' }}
           />
           {/* 菜单按钮 */}
           <TouchableOpacity style={[styles.btn, styles.pos1]} onPress={this.openTargetPanel}>

@@ -7,11 +7,15 @@ import {
   FlatList,
   TouchableOpacity,
   PixelRatio,
+  ToastAndroid,
 } from 'react-native';
 
 import PropTypes from 'prop-types';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
+import { connect } from 'react-redux';
 import { calc } from '../../lib/utils';
+
+import { sendCommandToRemote } from '../../api/index';
 
 const tabW = calc(460) / 3.0;
 const tabMargin = 0;
@@ -125,6 +129,8 @@ class TargetObjectTabs extends Component {
 
   // 滑屏动作结尾
   _onAnimationEnd = (e) => {
+    const { currentTarget } = this.props;
+
     const offset = e.nativeEvent.contentOffset.x;
     if (offset < 0) {
       return;
@@ -132,12 +138,125 @@ class TargetObjectTabs extends Component {
     // 300是专门针对M6平板的值,这里的问题我没有搞明白，目前
     const currentX = Math.floor(offset / 300);
     this._tabScrollToIndex(currentX);
+    // 选择文字
+    if (currentX === 0) {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'DESCRIBE',
+        eventAction: 'SWITCH',
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    } else if (currentX === 1) {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'PICTURE',
+        eventAction: 'SWITCH',
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    } else if (currentX === 2) {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'VIDEO',
+        eventAction: 'SWITCH',
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    }
   }
 
   // 单击某个页签
   _tabClick(index) {
+    const { currentTarget } = this.props;
     this._tabScrollToIndex(index);
     this._scrollView.scrollTo({ x: index * WIDTH, y: 0, animated: true });
+    // 选择文字
+    if (index === 0) {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'DESCRIBE',
+        eventAction: 'SWITCH',
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    } else if (index === 1) {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'PICTURE',
+        eventAction: 'SWITCH',
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    } else if (index === 2) {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'VIDEO',
+        eventAction: 'SWITCH',
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    }
   }
 
   // 渲染每个tab页签对应的内容区域
@@ -241,5 +360,19 @@ class TargetObjectTabs extends Component {
 
 TargetObjectTabs.propTypes = {
   children: PropTypes.any,
+  currentTarget: PropTypes.object,
 };
-export default TargetObjectTabs;
+
+
+// export default TargetObjectTabs;
+
+const mapStateToProps = (state) => ({
+  currentTarget: state.app.currentTarget,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(TargetObjectTabs);

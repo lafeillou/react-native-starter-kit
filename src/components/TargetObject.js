@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions,
+  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ToastAndroid,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
@@ -11,6 +11,8 @@ import Video from 'react-native-video';
 import { calc } from '../lib/utils';
 
 import TargetObjectTabs from './TargetObjectTabs';
+
+import { sendCommandToRemote } from '../api/index';
 
 // import Lightbox from './BaseLightbox';
 
@@ -103,10 +105,28 @@ class TargetObject extends React.Component {
   }
 
   openLightbox() {
-    const { setCurrentModal } = this.props;
+    const { setCurrentModal, currentTarget } = this.props;
     setCurrentModal({
       isVisible: true,
       componentName: '',
+    });
+    // 打开兵力部署弹窗
+    // 发送远程指令
+    sendCommandToRemote({
+      targetId: currentTarget.id,
+      eventSource: 'PAD',
+      eventType: 'TROOPS',
+      eventAction: 'SHOW',
+    }).then((res) => {
+      console.log('=============指令调用结果==================');
+      console.log(res);
+      if (res.status === 200) {
+        ToastAndroid.showWithGravity(
+          res.data.message,
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP,
+        );
+      }
     });
   }
 
