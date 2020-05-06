@@ -154,9 +154,11 @@ class TargetSubPanel extends Component {
     // 修改开关的状态
     const { targetList } = this.state;
     const data = targetList.map((o, i) => {
+      const temp = o;
       if (index === i) {
-        const temp = o;
-        temp.isOn = !o.isOn;
+        temp.isOn = true;
+      } else {
+        temp.isOn = false;
       }
       return o;
     });
