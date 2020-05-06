@@ -52,3 +52,15 @@ export function getTroopDispositionList(params) {
     params,
   });
 }
+
+/**
+ *
+ * 退出登录
+ */
+
+export function loginOut(id) {
+  return axios({
+    method: 'get',
+    url: `/logout/${id}`,
+  });
+}

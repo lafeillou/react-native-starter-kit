@@ -37,6 +37,8 @@ export default {
       isVisible: false,
       componentName: '',
     },
+    // 用户信息
+    userInfo: null,
   },
 
   /**
@@ -51,6 +53,12 @@ export default {
    * Reducers
    */
   reducers: {
+    setUserInfo(state, payload) {
+      return {
+        ...state,
+        userInfo: payload,
+      };
+    },
     setCurrentModal(state, payload) {
       return {
         ...state,

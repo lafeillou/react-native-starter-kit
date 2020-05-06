@@ -2,8 +2,10 @@ import 'react-native-get-random-values';
 import React, { Component } from 'react';
 
 import {
-  StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid,
+  StyleSheet, View, Dimensions, TouchableOpacity, ToastAndroid, TouchableWithoutFeedback,
 } from 'react-native';
+
+import { Thumbnail, Button, Text } from 'native-base';
 
 import { WebView } from 'react-native-webview';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
@@ -13,6 +15,8 @@ import Icon2 from 'yofc-react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import Modal from 'react-native-modal';
+import AsyncStorage from '@react-native-community/async-storage';
 import { calc } from '../lib/utils';
 
 import TargetPanel from './TargetPanel';
@@ -20,7 +24,8 @@ import TargetPanel from './TargetPanel';
 import clientMethod from '../lib/postJsCode';
 
 // import Lightbox from './BaseLightbox';
-import { sendCommandToRemote } from '../api/index';
+import { sendCommandToRemote, loginOut } from '../api/index';
+
 
 const patchPostMessageJsCode = `(${String(clientMethod)})(); true;`;
 
@@ -119,6 +124,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  personInfoPanel: {
+    width: calc(460),
+    height: Dimensions.get('window').height,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    margin: 0,
+    padding: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
 });
 
 
@@ -132,6 +149,8 @@ class LeafLetMap extends Component {
       currentLayerName: '地图',
       // 当前聚焦的点
       currentFocusTarget: null,
+      // 个人信息弹窗
+      personInfoIsVisible: false,
     };
     this.openTargetPanel = this.openTargetPanel.bind(this);
     this.closeTargetPanel = this.closeTargetPanel.bind(this);
@@ -144,6 +163,8 @@ class LeafLetMap extends Component {
     this.showTargetObjectPanel = this.showTargetObjectPanel.bind(this);
     this.focusToPoint = this.focusToPoint.bind(this);
     this.dispatchGeoJsonDataToH5 = this.dispatchGeoJsonDataToH5.bind(this);
+    this.dismissModalHandler = this.dismissModalHandler.bind(this);
+    this.loginOut = this.loginOut.bind(this);
   }
 
 
@@ -237,18 +258,21 @@ class LeafLetMap extends Component {
 
     testClick() {
       // console.log('testClick');
-      const json = {
-        // 传入函数体,这个写法很反人类
-        callback: String(`
-          alert(data.name)
-          alert(data.age)
-        `),
-        args: {
-          name: 'lafeillou',
-          age: 34,
-        },
-      };
-      this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+      // const json = {
+      //   // 传入函数体,这个写法很反人类
+      //   callback: String(`
+      //     alert(data.name)
+      //     alert(data.age)
+      //   `),
+      //   args: {
+      //     name: 'lafeillou',
+      //     age: 34,
+      //   },
+      // };
+      // this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+      this.setState({
+        personInfoIsVisible: true,
+      });
     }
 
 
@@ -302,11 +326,33 @@ class LeafLetMap extends Component {
       this.dispatchGeoJsonDataToH5(currentTarget);
     }
 
+    dismissModalHandler() {
+      this.setState({
+        personInfoIsVisible: false,
+      });
+    }
+
+    // 退出登录
+    loginOut() {
+      const { userInfo } = this.props;
+      loginOut(userInfo.id).then((res) => {
+        if (res.status === 200) {
+          this.dismissModalHandler();
+          setTimeout(() => {
+            Actions.login();
+            // 删除token
+            AsyncStorage.removeItem('@Authentication:token');
+          }, 300);
+        }
+      });
+    }
+
+
     render() {
       const {
-        showTargetPanel, currentLayerName, currentFocusTarget,
+        showTargetPanel, currentLayerName, currentFocusTarget, personInfoIsVisible,
       } = this.state;
-      const { globalRemoteUrl } = this.props;
+      const { globalRemoteUrl, userInfo } = this.props;
       return (
 
         <View style={styles.container}>
@@ -315,8 +361,8 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html` }}
-            // source={{ uri: 'http://192.168.3.31:8080/' }}
+            // source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html` }}
+            source={{ uri: 'http://10.90.130.213:8082' }}
           />
           {/* 菜单按钮 */}
           <TouchableOpacity style={[styles.btn, styles.pos1]} onPress={this.openTargetPanel}>
@@ -417,7 +463,47 @@ class LeafLetMap extends Component {
 
           <TargetPanel isVisible={showTargetPanel} closeFn={this.closeTargetPanel} />
 
+          {/* 个人信息弹窗 */}
+          <Modal
+            isVisible={personInfoIsVisible}
 
+            animationIn="slideInRight"
+            animationOut="slideOutRight"
+            style={{
+              padding: 0,
+              margin: 0,
+            }}
+
+            customBackdrop={(
+              <TouchableWithoutFeedback onPress={this.dismissModalHandler}>
+                <View style={{
+                  flex: 1,
+                }}
+                />
+              </TouchableWithoutFeedback>
+            )}
+          >
+            <View style={styles.personInfoPanel}>
+              <Thumbnail large source={{ uri: `http://${globalRemoteUrl}/avatar/${userInfo.avatar}` }} style={{ marginBottom: calc(36) }} />
+              <Text style={{ color: '#fff', fontSize: calc(24), lineHeight: calc(36) }}>{userInfo.roleName}</Text>
+              <Text style={{ color: '#fff', fontSize: calc(24), lineHeight: calc(36) }}>{userInfo.username}</Text>
+              <Text style={{
+                color: '#fff', fontSize: calc(24), lineHeight: calc(36), marginTop: calc(18),
+              }}
+              >
+                联系电话
+              </Text>
+              <Text style={{ color: '#fff', fontSize: calc(24), lineHeight: calc(36) }}>{userInfo.mobile}</Text>
+              <Text style={{
+                color: '#fff', fontSize: calc(24), lineHeight: calc(36), marginTop: calc(18),
+              }}
+              >
+                电子邮箱
+              </Text>
+              <Text style={{ color: '#fff', fontSize: calc(24), lineHeight: calc(36) }}>{userInfo.email}</Text>
+              <Button info style={{ marginTop: calc(100) }} onPress={this.loginOut}><Text> 退出登录 </Text></Button>
+            </View>
+          </Modal>
         </View>
 
 
@@ -431,6 +517,7 @@ LeafLetMap.childContextTypes = {
   webref: PropTypes.object,
   setCurrentFocusTarget: PropTypes.func,
   getCurrentFocusTarget: PropTypes.func,
+  userInfo: PropTypes.object,
 };
 
 
@@ -448,6 +535,7 @@ LeafLetMap.defaultProps = {
 const mapStateToProps = (state) => ({
   globalRemoteUrl: state.app.globalRemoteUrl,
   currentTarget: state.app.currentTarget,
+  userInfo: state.app.userInfo.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({

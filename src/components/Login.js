@@ -43,11 +43,10 @@ class Login extends React.Component {
     this.state = {
       userName: 'mrbird',
       userPwd: '1234qwer',
-      remoteIp: '111.47.10.117:30024',
+      remoteIp: '192.168.8.154',
       showRemoteIp: false,
     };
     this.closeModal = this.closeModal.bind(this);
-
     // this._afterAnimation = this._afterAnimation.bind(this);
     this.showRemoteIp = this.showRemoteIp.bind(this);
   }
@@ -58,7 +57,7 @@ class Login extends React.Component {
 
   closeModal() {
     const { userName, userPwd, remoteIp } = this.state;
-    const { setGlobalRemoteUrl } = this.props;
+    const { setGlobalRemoteUrl, setUserInfo } = this.props;
     AsyncStorage.setItem('@GlobalRemoteUrl', remoteIp);
     setGlobalRemoteUrl(remoteIp);
 
@@ -70,6 +69,8 @@ class Login extends React.Component {
       // 登录成功了，缓存token
       if (res.status === 200) {
         AsyncStorage.setItem('@Authentication:token', res.data.data.token);
+        // 将用户信息存储到redux中
+        setUserInfo(res.data.data);
         Actions.home();
       }
     });
@@ -183,6 +184,7 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
   setGlobalRemoteUrl: dispatch.app.setGlobalRemoteUrl,
+  setUserInfo: dispatch.app.setUserInfo,
 });
 
 
