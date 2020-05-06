@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, StyleSheet, Animated, Dimensions, Button, Text, TouchableOpacity, ScrollView,
+  View, StyleSheet, Animated, Dimensions, Button, Text, TouchableOpacity, ScrollView, ToastAndroid,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import { calc } from '../lib/utils';
 
 
-import { getTroopDispositionList } from '../api/index';
+import { getTroopDispositionList, sendCommandToRemote } from '../api/index';
 
 const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
@@ -180,10 +180,27 @@ class BaseLightbox extends Component {
 
 
   _closeModal() {
-    const { setCurrentModal } = this.props;
+    const { setCurrentModal, currentTarget } = this.props;
     setCurrentModal({
       isVisible: false,
       componentName: '',
+    });
+    // 发送远程指令
+    sendCommandToRemote({
+      targetId: currentTarget.id,
+      eventSource: 'PAD',
+      eventType: 'TROOPS',
+      eventAction: 'HIDE',
+    }).then((res) => {
+      // console.log('=============指令调用结果==================');
+      // console.log(res);
+      if (res.status === 200) {
+        ToastAndroid.showWithGravity(
+          res.data.message,
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP,
+        );
+      }
     });
   }
 

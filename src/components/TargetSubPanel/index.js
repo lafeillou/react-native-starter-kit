@@ -177,8 +177,8 @@ class TargetSubPanel extends Component {
     // console.log('=====================目标数据==========================');
     // console.log(data[index]);
 
-    console.log('=================当前聚焦的点参考================');
-    console.log(data[index]);
+    // console.log('=================当前聚焦的点参考================');
+    // console.log(data[index]);
 
 
     this.dispatchGeoJsonDataToH5(data[index]);
@@ -195,8 +195,8 @@ class TargetSubPanel extends Component {
       eventType: 'OBJECT',
       eventAction: 'LOCATE',
     }).then((res) => {
-      console.log('=============指令调用结果==================');
-      console.log(res);
+      // console.log('=============指令调用结果==================');
+      // console.log(res);
       if (res.status === 200) {
         ToastAndroid.showWithGravity(
           res.data.message,
@@ -266,7 +266,6 @@ class TargetSubPanel extends Component {
                     <TouchableOpacity style={styles.listItem} onPress={() => { this.selectItem(index); }} key={`${value.classifyCode}_${value.targetName}_${value.id}`}>
                       <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
                         {/* <Icon name="shiweizhengfu_2" size={24} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} /> */}
-
                         <Image
                           source={ImageIconMap[value.classifyCode]}
                           style={{

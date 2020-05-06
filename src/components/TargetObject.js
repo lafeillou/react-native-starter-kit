@@ -151,10 +151,29 @@ class TargetObject extends React.Component {
 
 
   dismissModalHandler() {
+    const { currentTarget } = this.props;
     this.setState({
       mediaIsVisible: false,
     });
     this.togglePlay();
+    // 发送远程指令
+    sendCommandToRemote({
+      targetId: currentTarget.id,
+      eventSource: 'PAD',
+      eventType: this.currentMedia.type.toUpperCase(),
+      eventAction: 'HIDE',
+      eventAttachmentUrl: `${this.currentMedia.fullPath}`,
+    }).then((res) => {
+      // console.log('=============指令调用结果==================');
+      // console.log(res);
+      if (res.status === 200) {
+        ToastAndroid.showWithGravity(
+          res.data.message,
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP,
+        );
+      }
+    });
   }
 
   openMediaPanel(data) {
@@ -172,10 +191,10 @@ class TargetObject extends React.Component {
         eventSource: 'PAD',
         eventType: 'VIDEO',
         eventAction: 'SHOW',
-        eventAttachmentUrl: `http://${globalRemoteUrl}/${data.fullPath}`,
+        eventAttachmentUrl: `${data.fullPath}`,
       }).then((res) => {
-        console.log('=============指令调用结果==================');
-        console.log(res);
+        // console.log('=============指令调用结果==================');
+        // console.log(res);
         if (res.status === 200) {
           ToastAndroid.showWithGravity(
             res.data.message,
@@ -191,10 +210,10 @@ class TargetObject extends React.Component {
         eventSource: 'PAD',
         eventType: 'PICTURE',
         eventAction: 'SHOW',
-        eventAttachmentUrl: `http://${globalRemoteUrl}/${data.fullPath}`,
+        eventAttachmentUrl: `${data.fullPath}`,
       }).then((res) => {
-        console.log('=============指令调用结果==================');
-        console.log(res);
+        // console.log('=============指令调用结果==================');
+        // console.log(res);
         if (res.status === 200) {
           ToastAndroid.showWithGravity(
             res.data.message,
