@@ -312,7 +312,7 @@ class TargetObject extends React.Component {
             <View style={{ flex: 1 }}>
 
               {currentTarget.pictureList.map((o) => (
-                <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'picture' })); }}>
+                <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'picture' })); }} key={o.fileId}>
                   <Image source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
                 </TouchableWithoutFeedback>
               ))}
