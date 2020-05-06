@@ -123,7 +123,7 @@ class TargetObject extends React.Component {
     sendCommandToRemote({
       targetId: currentTarget.id,
       eventSource: 'PAD',
-      eventType: '',
+      eventType: 'OBJECT',
       eventAction: 'UNSWITCH',
       eventAttachmentUrl: '',
     }).then((res) => {
