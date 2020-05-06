@@ -114,7 +114,7 @@ class TargetObject extends React.Component {
 
   // eslint-disable-next-line class-methods-use-this
   closeDrawer() {
-    const { currentMedia } = this.state;
+    // const { currentMedia } = this.state;
     const { currentTarget } = this.props;
     // Actions.drawerClose();
     Actions.pop();
@@ -125,7 +125,7 @@ class TargetObject extends React.Component {
       eventSource: 'PAD',
       eventType: '',
       eventAction: 'UNSWITCH',
-      eventAttachmentUrl: `${currentMedia.fullPath}`,
+      eventAttachmentUrl: '',
     }).then((res) => {
       // console.log('=============指令调用结果==================');
       // console.log(res);
