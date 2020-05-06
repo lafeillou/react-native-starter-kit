@@ -49,10 +49,27 @@ class Login extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     // this._afterAnimation = this._afterAnimation.bind(this);
     this.showRemoteIp = this.showRemoteIp.bind(this);
+    this.getGlobalRemoteUrl = this.getGlobalRemoteUrl.bind(this);
   }
 
-  componentDidMount() {
 
+  componentDidMount() {
+    this.getGlobalRemoteUrl().then((res) => {
+      if (typeof res === 'string') {
+        this.setState({
+          remoteIp: res,
+        });
+      }
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async getGlobalRemoteUrl() {
+    let globalRemoteUrl = '192.168.8.154';
+    globalRemoteUrl = await AsyncStorage.getItem('@GlobalRemoteUrl');
+    console.log('=====================globalRemoteUrl');
+    console.log(globalRemoteUrl);
+    return globalRemoteUrl;
   }
 
   closeModal() {
@@ -172,11 +189,12 @@ class Login extends React.Component {
 
 Login.defaultProps = {
   setGlobalRemoteUrl: () => {},
+  setUserInfo: () => {},
 };
 
 Login.propTypes = {
   setGlobalRemoteUrl: PropTypes.func,
-
+  setUserInfo: PropTypes.func,
 };
 
 

@@ -362,8 +362,8 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html` }}
-            // source={{ uri: 'http://10.90.130.213:8082' }}
+            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.0.4` }}
+            // source={{ uri: 'http://10.90.130.213:8080' }}
           />
           {/* 菜单按钮 */}
           <TouchableOpacity style={[styles.btn, styles.pos1]} onPress={this.openTargetPanel}>
