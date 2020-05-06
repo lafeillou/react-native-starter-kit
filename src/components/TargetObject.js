@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ToastAndroid,
+  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ToastAndroid, TouchableWithoutFeedback,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
@@ -8,11 +8,13 @@ import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Video from 'react-native-video';
+import Modal from 'react-native-modal';
 import { calc } from '../lib/utils';
 
 import TargetObjectTabs from './TargetObjectTabs';
 
 import { sendCommandToRemote } from '../api/index';
+
 
 // import Lightbox from './BaseLightbox';
 
@@ -60,6 +62,18 @@ const styles = StyleSheet.create({
     marginRight: calc(20),
     marginTop: calc(20),
   },
+  mediaPanel: {
+    width: Dimensions.get('window').width * 0.75,
+    height: Dimensions.get('window').height * 0.75,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    margin: 0,
+    padding: 0,
+    position: 'absolute',
+    left: Dimensions.get('window').width * 0.125,
+    top: Dimensions.get('window').height * 0.125,
+  },
 });
 
 class TargetObject extends React.Component {
@@ -69,12 +83,17 @@ class TargetObject extends React.Component {
     this.state = {
       // 视频暂停
       videoPaused: true,
+      // 文字、图片、视频弹窗
+      mediaIsVisible: false,
+      // 当前媒体内容;
+      currentMedia: null,
     };
     this.closeDrawer = this.closeDrawer.bind(this);
     this.onBuffer = this.onBuffer.bind(this);
     this.videoError = this.videoError.bind(this);
     this.togglePlay = this.togglePlay.bind(this);
     this.openLightbox = this.openLightbox.bind(this);
+    this.dismissModalHandler = this.dismissModalHandler.bind(this);
   }
 
   componentDidMount() {
@@ -130,9 +149,68 @@ class TargetObject extends React.Component {
     });
   }
 
+
+  dismissModalHandler() {
+    this.setState({
+      mediaIsVisible: false,
+    });
+    this.togglePlay();
+  }
+
+  openMediaPanel(data) {
+    const { currentTarget, globalRemoteUrl } = this.props;
+
+    this.setState({
+      mediaIsVisible: true,
+      currentMedia: data,
+    });
+
+    if (data.type === 'video') {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'VIDEO',
+        eventAction: 'SHOW',
+        eventAttachmentUrl: `http://${globalRemoteUrl}/${data.fullPath}`,
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    } else if (data.type === 'picture') {
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'PICTURE',
+        eventAction: 'SHOW',
+        eventAttachmentUrl: `http://${globalRemoteUrl}/${data.fullPath}`,
+      }).then((res) => {
+        console.log('=============指令调用结果==================');
+        console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
+    }
+
+    this.togglePlay();
+  }
+
   render() {
     const { currentTarget, globalRemoteUrl } = this.props;
-    const { videoPaused } = this.state;
+    const { videoPaused, mediaIsVisible, currentMedia } = this.state;
     return (
       <View style={styles.container}>
 
@@ -190,7 +268,9 @@ class TargetObject extends React.Component {
             <View style={{ flex: 1 }}>
 
               {currentTarget.pictureList.map((o) => (
-                <Image source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
+                <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'picture' })); }}>
+                  <Image source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
+                </TouchableWithoutFeedback>
               ))}
 
             </View>
@@ -198,7 +278,7 @@ class TargetObject extends React.Component {
               {currentTarget.mediaList.map((o) =>
               // 视频目前只支持一个
                 (
-                  <TouchableOpacity onPress={() => { this.togglePlay(); }} key={o.fileId}>
+                  <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'video' })); }} key={o.fileId}>
                     <Video
                       source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} // Can be a URL or a local file.
                       key={o.fileId}
@@ -208,16 +288,59 @@ class TargetObject extends React.Component {
                       onBuffer={this.onBuffer} // Callback when remote video is buffering
                       onError={this.videoError} // Callback when video cannot be loaded
                       style={[styles.backgroundVideo]}
-                      paused={videoPaused}
+                      paused
                       resizeMode="cover"
                       volume={0.1}
-                      controls
                     />
-                  </TouchableOpacity>
+                  </TouchableWithoutFeedback>
                 ))}
             </View>
           </TargetObjectTabs>
         </View>
+
+
+        {/* 媒体内容弹窗，如文字、图片、视频 */}
+        <Modal
+          isVisible={mediaIsVisible}
+
+          animationIn="zoomIn"
+          animationOut="zoomOut"
+          style={{
+            padding: 0,
+            margin: 0,
+          }}
+
+          customBackdrop={(
+            <TouchableWithoutFeedback onPress={this.dismissModalHandler}>
+              <View style={{
+                flex: 1,
+                backgroundColor: 'rgba(0,0,0,0.85)',
+              }}
+              />
+            </TouchableWithoutFeedback>
+            )}
+        >
+          <View style={styles.mediaPanel}>
+            {currentMedia && currentMedia.type === 'picture' && (<Image source={{ uri: `http://${globalRemoteUrl}/${currentMedia.fullPath}` }} style={[{ flex: 1, height: Dimensions.get('window').height * 0.75, width: Dimensions.get('window').width * 0.75 }]} key={currentMedia.fileId} />)}
+            {currentMedia && currentMedia.type === 'video' && (
+            <Video
+              source={{ uri: `http://${globalRemoteUrl}/${currentMedia.fullPath}` }} // Can be a URL or a local file.
+              key={currentMedia.fileId}
+              ref={(ref) => {
+                this.player = ref;
+              }} // Store reference
+              onBuffer={this.onBuffer} // Callback when remote video is buffering
+              onError={this.videoError} // Callback when video cannot be loaded
+              style={[{ flex: 1, height: Dimensions.get('window').height * 0.75, width: Dimensions.get('window').width * 0.75 }]}
+              paused={videoPaused}
+              resizeMode="cover"
+              volume={0.1}
+              controls
+
+            />
+            )}
+          </View>
+        </Modal>
       </View>
     );
   }

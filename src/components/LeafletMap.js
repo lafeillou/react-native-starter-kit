@@ -309,6 +309,7 @@ class LeafLetMap extends Component {
 
 
     dispatchGeoJsonDataToH5(data) {
+      // console.log(data);
       const json = {
         callback: 'window.Vue.$emit("dispatchGeoJsonDataToH5", {data: data.data})',
         args: {
@@ -361,8 +362,8 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            // source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html` }}
-            source={{ uri: 'http://10.90.130.213:8082' }}
+            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html` }}
+            // source={{ uri: 'http://10.90.130.213:8082' }}
           />
           {/* 菜单按钮 */}
           <TouchableOpacity style={[styles.btn, styles.pos1]} onPress={this.openTargetPanel}>
@@ -407,7 +408,7 @@ class LeafLetMap extends Component {
           </View>
 
           {/* 顶部连接状态反馈 */}
-          <View style={styles.topWarningBlock}>
+          {/* <View style={styles.topWarningBlock}>
             <View style={[styles.btn, styles.flex0]}>
               <Icon name="tablet" size={calc(24)} color="white" />
             </View>
@@ -419,7 +420,7 @@ class LeafLetMap extends Component {
             <View style={[styles.btn, styles.flex0]}>
               <Icon name="desktop" size={calc(24)} color="white" />
             </View>
-          </View>
+          </View> */}
 
           {/* 左下角地图切换按钮 */}
           <View style={styles.layerSwitch}>
