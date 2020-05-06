@@ -103,18 +103,42 @@ class TargetObject extends React.Component {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  closeDrawer() {
-    // Actions.drawerClose();
-    Actions.pop();
-  }
-
   onBuffer(e) {
     // console.log(e);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   videoError(e) {
     // console.log(e);
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  closeDrawer() {
+    const { currentMedia } = this.state;
+    const { currentTarget } = this.props;
+    // Actions.drawerClose();
+    Actions.pop();
+
+    // 发送远程指令
+    sendCommandToRemote({
+      targetId: currentTarget.id,
+      eventSource: 'PAD',
+      eventType: '',
+      eventAction: 'UNSWITCH',
+      eventAttachmentUrl: `${currentMedia.fullPath}`,
+    }).then((res) => {
+      // console.log('=============指令调用结果==================');
+      // console.log(res);
+      if (res.status === 200) {
+        ToastAndroid.showWithGravity(
+          res.data.message,
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP,
+        );
+      }
+    });
+  }
+
 
   togglePlay() {
     const { videoPaused } = this.state;
@@ -152,6 +176,7 @@ class TargetObject extends React.Component {
 
   dismissModalHandler() {
     const { currentTarget } = this.props;
+    const { currentMedia } = this.state;
     this.setState({
       mediaIsVisible: false,
     });
@@ -160,9 +185,9 @@ class TargetObject extends React.Component {
     sendCommandToRemote({
       targetId: currentTarget.id,
       eventSource: 'PAD',
-      eventType: this.currentMedia.type.toUpperCase(),
+      eventType: currentMedia.type.toUpperCase(),
       eventAction: 'HIDE',
-      eventAttachmentUrl: `${this.currentMedia.fullPath}`,
+      eventAttachmentUrl: `${currentMedia.fullPath}`,
     }).then((res) => {
       // console.log('=============指令调用结果==================');
       // console.log(res);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import {
-  View, Text, StyleSheet, Dimensions, TouchableOpacity,
+  View, Text, StyleSheet, Dimensions, TouchableOpacity, ToastAndroid,
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -10,6 +10,8 @@ import PropTypes from 'prop-types';
 import TargetObject from './TargetObject';
 import { calc } from '../lib/utils';
 import Lightbox from './BaseLightbox';
+
+import { sendCommandToRemote } from '../api/index';
 
 const styles = StyleSheet.create({
   outerContainer: {
@@ -40,6 +42,25 @@ class LightboxPlaceholder extends Component {
 
   closeModal() {
     Actions.pop();
+    const { currentTarget } = this.props;
+    // 发送远程指令
+    sendCommandToRemote({
+      targetId: currentTarget.id,
+      eventSource: 'PAD',
+      eventType: '',
+      eventAction: 'UNSWITCH',
+      eventAttachmentUrl: '',
+    }).then((res) => {
+      // console.log('=============指令调用结果==================');
+      // console.log(res);
+      if (res.status === 200) {
+        ToastAndroid.showWithGravity(
+          res.data.message,
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP,
+        );
+      }
+    });
   }
 
   render() {
@@ -65,12 +86,13 @@ class LightboxPlaceholder extends Component {
 
 LightboxPlaceholder.propTypes = {
   currentModal: PropTypes.object,
-
+  currentTarget: PropTypes.object,
 };
 
 
 const mapStateToProps = (state) => ({
   currentModal: state.app.currentModal,
+  currentTarget: state.app.currentTarget,
 });
 
 const mapDispatchToProps = (dispatch) => ({

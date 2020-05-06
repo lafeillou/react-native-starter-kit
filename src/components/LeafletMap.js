@@ -322,8 +322,8 @@ class LeafLetMap extends Component {
 
     focusToPoint() {
       const { currentTarget } = this.props;
-      console.log('=================当前聚焦的点================');
-      console.log(currentTarget);
+      // console.log('=================当前聚焦的点================');
+      // console.log(currentTarget);
       this.dispatchGeoJsonDataToH5(currentTarget);
     }
 
@@ -362,7 +362,7 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.0.4` }}
+            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.0.5` }}
             // source={{ uri: 'http://10.90.130.213:8080' }}
           />
           {/* 菜单按钮 */}
