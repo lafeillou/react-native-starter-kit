@@ -220,16 +220,9 @@ export default class TargetPanel extends Component {
       showMode: !showMode,
       targetList,
     });
-
     // 通知外界
     // 向远端发送指令
     sendCommandToRemote({
-      // "targetId":7(目标对象的ID),
-      // "eventSource":"PAD|PC|DI(光感输入信号)",
-      // "eventType":"OBJECT(目标对象)|DESCRIBE(文字描述)|PICTURE(图片)|VIDEO(视频)",
-      // "eventAction":"LOCATE(目标对象在地图中定位)|SWITCH(目标对象附加tab页的切换动作)|SHOW(附件资料在地图中央的居中弹层展示或播放)",
-      // eslint-disable-next-line max-len
-      // "eventAttachmentUrl":"eventType=PICTURE|VIDEO & eventAction=SHOW时 必填  内容为 附件URL  可通过http方式直接调用"
       targetId: '',
       eventSource: 'PAD',
       eventType: 'MAP',

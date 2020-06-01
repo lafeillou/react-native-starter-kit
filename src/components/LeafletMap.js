@@ -151,6 +151,7 @@ class LeafLetMap extends Component {
       currentFocusTarget: null,
       // 个人信息弹窗
       personInfoIsVisible: false,
+      webviewHasLoaded: false,
     };
     this.openTargetPanel = this.openTargetPanel.bind(this);
     this.closeTargetPanel = this.closeTargetPanel.bind(this);
@@ -165,7 +166,7 @@ class LeafLetMap extends Component {
     this.dispatchGeoJsonDataToH5 = this.dispatchGeoJsonDataToH5.bind(this);
     this.dismissModalHandler = this.dismissModalHandler.bind(this);
     this.loginOut = this.loginOut.bind(this);
-    this.webviewOnLoadEnd = this.webviewOnLoadEnd.bind(this);
+    this.webviewOnLoad = this.webviewOnLoad.bind(this);
   }
 
 
@@ -376,39 +377,48 @@ class LeafLetMap extends Component {
       });
     }
 
-    webviewOnLoadEnd() {
-      getTargetTreeList({
-        queryAreaType: 'DISTRICT',
-        queryAreaName: '邓州市',
-        keyword: '',
-      }).then((res) => {
-        // console.log(res);
-        if (res.status === 200) {
-          // 处理一下res.data.data, 标记其子元素上一种状态，即全部灯亮的状态isOn ,注意区别于全局灯亮的isAllOn
-          const data = res.data.data.map((o) => {
-            const temp = o;
-            temp.isOn = false;
-            return temp;
-          });
-          // console.log(data);
-          this.setState({
-            targetList: data,
-          });
+    webviewOnLoad() {
+      const { webviewHasLoaded } = this.state;
 
-          // 发出指令，让h5显示所有的目标作为背景
-          const json = {
-            callback: 'window.Vue.$emit("dispatchAllGeoJsonDataAsBgToH5", {data: data.data})',
-            args: {
-              data: JSON.stringify({
-                showMode: true,
-                targetList: data,
-              }),
-            },
-          };
-          // console.log('==================显示地图上所有目标作为背景========================');
-          // console.log(this.context);
-          this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
-        }
+      if (!webviewHasLoaded) {
+        getTargetTreeList({
+          queryAreaType: 'DISTRICT',
+          queryAreaName: '邓州市',
+          keyword: '',
+        }).then((res) => {
+          // console.log(res);
+          if (res.status === 200) {
+            // 处理一下res.data.data, 标记其子元素上一种状态，即全部灯亮的状态isOn ,注意区别于全局灯亮的isAllOn
+            const data = res.data.data.map((o) => {
+              const temp = o;
+              temp.isOn = false;
+              return temp;
+            });
+            // console.log(data);
+            this.setState({
+              targetList: data,
+            });
+            console.log('======================================================================');
+            console.log(1);
+            // 发出指令，让h5显示所有的目标作为背景
+            const json = {
+              callback: 'window.Vue.$emit("dispatchAllGeoJsonDataAsBgToH5", {data: data.data})',
+              args: {
+                data: JSON.stringify({
+                  showMode: true,
+                  targetList: data,
+                }),
+              },
+            };
+            // console.log('==================显示地图上所有目标作为背景========================');
+            // console.log(this.context);
+            this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+          }
+        });
+      }
+
+      this.setState({
+        webviewHasLoaded: true,
       });
     }
 
@@ -426,8 +436,8 @@ class LeafLetMap extends Component {
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
             // source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.0.5` }}
-            source={{ uri: 'http://10.90.132.40:8080?v=1.1.9' }}
-            onLoadEnd={this.webviewOnLoadEnd}
+            source={{ uri: 'http://10.90.132.40:8080?v=1.3.5' }}
+            onLoad={this.webviewOnLoad}
           />
           {/* 菜单按钮 */}
           <TouchableOpacity style={[styles.btn, styles.pos1]} onPress={this.openTargetPanel}>
