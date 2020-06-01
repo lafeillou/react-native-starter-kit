@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ToastAndroid, TouchableWithoutFeedback,
+  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ToastAndroid, TouchableWithoutFeedback, ScrollView,
 } from 'react-native';
 
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
@@ -299,45 +299,49 @@ class TargetObject extends React.Component {
               flex: 1,
             }}
             >
-              {currentTarget.targetDesc && (
-              <Text style={{
-                color: '#fff', lineHeight: calc(20) * 1.5, paddingLeft: calc(20), paddingTop: calc(20), paddingRight: calc(20), paddingBottom: calc(20),
-              }}
-              >
-                {currentTarget.targetDesc}
-              </Text>
-              )}
 
+              <ScrollView style={{ flex: 1 }}>
+                {currentTarget.targetDesc && (
+                <Text style={{
+                  color: '#fff', lineHeight: calc(20) * 1.5, paddingLeft: calc(20), paddingTop: calc(20), paddingRight: calc(20), paddingBottom: calc(20),
+                }}
+                >
+                  {currentTarget.targetDesc}
+                </Text>
+                )}
+              </ScrollView>
             </View>
-            <View style={{ flex: 1 }}>
-
-              {currentTarget.pictureList.map((o) => (
-                <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'picture' })); }} key={o.fileId}>
-                  <Image source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
-                </TouchableWithoutFeedback>
-              ))}
-
-            </View>
-            <View style={{ flex: 1 }}>
-              {currentTarget.mediaList.map((o) =>
-              // 视频目前只支持一个
-                (
-                  <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'video' })); }} key={o.fileId}>
-                    <Video
-                      source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} // Can be a URL or a local file.
-                      key={o.fileId}
-                      ref={(ref) => {
-                        this.player = ref;
-                      }} // Store reference
-                      onBuffer={this.onBuffer} // Callback when remote video is buffering
-                      onError={this.videoError} // Callback when video cannot be loaded
-                      style={[styles.backgroundVideo]}
-                      paused
-                      resizeMode="cover"
-                      volume={0.1}
-                    />
+            <View style={{ flex: 1, backgroundColor: 'red' }}>
+              <ScrollView style={{ flex: 1 }}>
+                {currentTarget.pictureList.map((o) => (
+                  <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'picture' })); }} key={o.fileId}>
+                    <Image source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} style={styles.imageStyle} key={o.fileId} />
                   </TouchableWithoutFeedback>
                 ))}
+              </ScrollView>
+            </View>
+            <View style={{ flex: 1 }}>
+              <ScrollView style={{ flex: 1 }}>
+                {currentTarget.mediaList.map((o) =>
+                // 视频目前只支持一个
+                  (
+                    <TouchableWithoutFeedback onPress={() => { this.openMediaPanel(Object.assign(o, { type: 'video' })); }} key={o.fileId}>
+                      <Video
+                        source={{ uri: `http://${globalRemoteUrl}/${o.fullPath}` }} // Can be a URL or a local file.
+                        key={o.fileId}
+                        ref={(ref) => {
+                          this.player = ref;
+                        }} // Store reference
+                        onBuffer={this.onBuffer} // Callback when remote video is buffering
+                        onError={this.videoError} // Callback when video cannot be loaded
+                        style={[styles.backgroundVideo]}
+                        paused
+                        resizeMode="cover"
+                        volume={0.1}
+                      />
+                    </TouchableWithoutFeedback>
+                  ))}
+              </ScrollView>
             </View>
           </TargetObjectTabs>
         </View>
