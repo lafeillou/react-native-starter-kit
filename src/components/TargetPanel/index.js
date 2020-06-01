@@ -8,7 +8,7 @@ import {
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import TargetSubPanel from '../TargetSubPanel';
 // 接口
-import { getTargetTreeList } from '../../api';
+import { getTargetTreeList, sendCommandToRemote } from '../../api';
 
 import { calc } from '../../lib/utils';
 
@@ -72,6 +72,8 @@ export default class TargetPanel extends Component {
 
     this.state = {
       isAllOn: false,
+      // 显示模式,为true则将所有目标作为背景显示
+      showMode: true,
       targetList: [],
       // 当前选中的一级分类
       currentFirstIndex: -1,
@@ -95,6 +97,9 @@ export default class TargetPanel extends Component {
     this.getChildTargetList = this.getChildTargetList.bind(this);
     // this.isAllOn = this.isAllOn.bind(this);
     this.childListItemSelected = this.childListItemSelected.bind(this);
+    this.switchShowMode = this.switchShowMode.bind(this);
+    // 传递数据，在地图上显示所有目标作为背景
+    this.dispatchAllGeoJsonDataAsBgToH5 = this.dispatchAllGeoJsonDataAsBgToH5.bind(this);
   }
 
 
@@ -202,6 +207,40 @@ export default class TargetPanel extends Component {
     this.selectItem(index);
   }
 
+  // 切换显示模式
+  switchShowMode() {
+    const { showMode, targetList } = this.state;
+    this.setState(
+      {
+        showMode: !showMode,
+      },
+    );
+    // 发出指令，让h5显示所有的目标作为背景
+    this.dispatchAllGeoJsonDataAsBgToH5({
+      showMode: !showMode,
+      targetList,
+    });
+
+    // 通知外界
+    // 向远端发送指令
+    sendCommandToRemote({
+      // "targetId":7(目标对象的ID),
+      // "eventSource":"PAD|PC|DI(光感输入信号)",
+      // "eventType":"OBJECT(目标对象)|DESCRIBE(文字描述)|PICTURE(图片)|VIDEO(视频)",
+      // "eventAction":"LOCATE(目标对象在地图中定位)|SWITCH(目标对象附加tab页的切换动作)|SHOW(附件资料在地图中央的居中弹层展示或播放)",
+      // eslint-disable-next-line max-len
+      // "eventAttachmentUrl":"eventType=PICTURE|VIDEO & eventAction=SHOW时 必填  内容为 附件URL  可通过http方式直接调用"
+      targetId: '',
+      eventSource: 'PAD',
+      eventType: 'MAP',
+      eventAction: 'SHOWALLTARGETS',
+      eventAttachmentUrl: !showMode, // true: 全部target显示； false：一个时间仅显示一个
+    }).then((res) => {
+      // console.log('=============指令调用结果==================');
+      console.log(res);
+    });
+  }
+
   // 子组件传来状态,某个子节点被选中状态
   childListItemSelected(index, bool) {
     const { targetList, currentFirstIndex, selectedIndex } = this.state;
@@ -231,9 +270,22 @@ export default class TargetPanel extends Component {
     });
   }
 
+  dispatchAllGeoJsonDataAsBgToH5(data) {
+    const { webref } = this.context;
+    const json = {
+      callback: 'window.Vue.$emit("dispatchAllGeoJsonDataAsBgToH5", {data: data.data})',
+      args: {
+        data: JSON.stringify(data),
+      },
+    };
+    // console.log('==================显示地图上所有目标作为背景========================');
+    // console.log(this.context);
+    webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+  }
+
   render() {
     const {
-      isAllOn, targetList, currentFirstIndex, showTargetSubPanel, selectedIndex,
+      isAllOn, showMode, targetList, currentFirstIndex, showTargetSubPanel, selectedIndex,
       currentWidth, childList, title,
     } = this.state;
     const { isVisible } = this.props;
@@ -266,6 +318,21 @@ export default class TargetPanel extends Component {
                   onValueChange={this.switchTopSwitchValue}
                 />
               </View> */}
+
+              {/* 显示模式控制,打开时所有的目标作为背景，在屏幕上显示 */}
+
+              <View style={{
+                position: 'absolute', height: calc(48), right: calc(4), top: 0, alignItems: 'center',
+              }}
+              >
+                <Switch
+                  style={{ flex: 1 }}
+                  thumbColor="#fefefe"
+                  trackColor={{ true: '#45aeff', false: 'fefefe' }}
+                  value={showMode}
+                  onValueChange={this.switchShowMode}
+                />
+              </View>
             </View>
 
             <View style={styles.body}>
@@ -324,4 +391,9 @@ TargetPanel.propTypes = {
 TargetPanel.defaultProps = {
   isVisible: false,
   closeFn: () => {},
+};
+
+TargetPanel.contextTypes = {
+  webref: PropTypes.object,
+  setCurrentFocusTarget: PropTypes.func,
 };

@@ -44,6 +44,7 @@ class Login extends React.Component {
       userName: 'mrbird',
       userPwd: '1234qwer',
       remoteIp: '192.168.8.154',
+      // remoteIp: '111.47.10.117:30024',
       showRemoteIp: false,
     };
     this.closeModal = this.closeModal.bind(this);

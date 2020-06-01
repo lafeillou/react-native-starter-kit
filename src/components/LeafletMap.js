@@ -24,7 +24,7 @@ import TargetPanel from './TargetPanel';
 import clientMethod from '../lib/postJsCode';
 
 // import Lightbox from './BaseLightbox';
-import { sendCommandToRemote, loginOut } from '../api/index';
+import { sendCommandToRemote, loginOut, getTargetTreeList } from '../api/index';
 
 
 const patchPostMessageJsCode = `(${String(clientMethod)})(); true;`;
@@ -165,6 +165,7 @@ class LeafLetMap extends Component {
     this.dispatchGeoJsonDataToH5 = this.dispatchGeoJsonDataToH5.bind(this);
     this.dismissModalHandler = this.dismissModalHandler.bind(this);
     this.loginOut = this.loginOut.bind(this);
+    this.webviewOnLoadEnd = this.webviewOnLoadEnd.bind(this);
   }
 
 
@@ -197,6 +198,33 @@ class LeafLetMap extends Component {
       switch (type) {
         case 'getUser':
           this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+          break;
+        case 'getCenterAndZoom':
+          console.log(params);
+          // 向远端发送指令
+          sendCommandToRemote({
+            // "targetId":7(目标对象的ID),
+            // "eventSource":"PAD|PC|DI(光感输入信号)",
+            // "eventType":"OBJECT(目标对象)|DESCRIBE(文字描述)|PICTURE(图片)|VIDEO(视频)",
+            // "eventAction":"LOCATE(目标对象在地图中定位)|SWITCH(目标对象附加tab页的切换动作)|SHOW(附件资料在地图中央的居中弹层展示或播放)",
+            // eslint-disable-next-line max-len
+            // "eventAttachmentUrl":"eventType=PICTURE|VIDEO & eventAction=SHOW时 必填  内容为 附件URL  可通过http方式直接调用"
+            targetId: '',
+            eventSource: 'PAD',
+            eventType: 'MAP',
+            eventAction: 'MOVE',
+            eventAttachmentUrl: JSON.stringify({ zoom: params.zoom, center: params.center }),
+          }).then((res) => {
+            // console.log('=============指令调用结果==================');
+            console.log(res);
+            // if (res.status === 200) {
+            //   ToastAndroid.showWithGravity(
+            //     res.data.message,
+            //     ToastAndroid.SHORT,
+            //     ToastAndroid.TOP,
+            //   );
+            // }
+          });
           break;
         case 'openRightTabs':
           this.setCurrentFocusTarget({ ...params });
@@ -348,6 +376,41 @@ class LeafLetMap extends Component {
       });
     }
 
+    webviewOnLoadEnd() {
+      getTargetTreeList({
+        queryAreaType: 'DISTRICT',
+        queryAreaName: '邓州市',
+        keyword: '',
+      }).then((res) => {
+        // console.log(res);
+        if (res.status === 200) {
+          // 处理一下res.data.data, 标记其子元素上一种状态，即全部灯亮的状态isOn ,注意区别于全局灯亮的isAllOn
+          const data = res.data.data.map((o) => {
+            const temp = o;
+            temp.isOn = false;
+            return temp;
+          });
+          // console.log(data);
+          this.setState({
+            targetList: data,
+          });
+
+          // 发出指令，让h5显示所有的目标作为背景
+          const json = {
+            callback: 'window.Vue.$emit("dispatchAllGeoJsonDataAsBgToH5", {data: data.data})',
+            args: {
+              data: JSON.stringify({
+                showMode: true,
+                targetList: data,
+              }),
+            },
+          };
+          // console.log('==================显示地图上所有目标作为背景========================');
+          // console.log(this.context);
+          this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+        }
+      });
+    }
 
     render() {
       const {
@@ -362,8 +425,9 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.0.5` }}
-            // source={{ uri: 'http://10.90.130.213:8080' }}
+            // source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.0.5` }}
+            source={{ uri: 'http://10.90.132.40:8080?v=1.1.9' }}
+            onLoadEnd={this.webviewOnLoadEnd}
           />
           {/* 菜单按钮 */}
           <TouchableOpacity style={[styles.btn, styles.pos1]} onPress={this.openTargetPanel}>
