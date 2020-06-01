@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import qs from 'qs';
+import { Actions } from 'react-native-router-flux';
 import Config from '../constants/config';
 
 /**
@@ -67,7 +68,8 @@ axios.interceptors.response.use(
     }
 
     // Otherwise just return the data
-
+    // 如果token超时，则送去登录界面
+    // Actions.login()
     return res;
   },
   (error) => {
