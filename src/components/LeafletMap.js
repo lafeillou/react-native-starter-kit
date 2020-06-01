@@ -435,8 +435,8 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            // source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.0.5` }}
-            source={{ uri: 'http://10.90.132.40:8080?v=1.3.5' }}
+            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.1.0` }}
+            // source={{ uri: 'http://10.90.132.40:8080?v=1.3.5' }}
             onLoad={this.webviewOnLoad}
           />
           {/* 菜单按钮 */}
