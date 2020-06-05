@@ -330,32 +330,32 @@ export default class TargetPanel extends Component {
 
             <View style={styles.body}>
               <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-                <View>
-                  {targetList.map(
-                    (value, index) => (
-                      <TouchableOpacity style={styles.listItem} onPress={() => { this.pressTargetItem(index); }} key={`${value.targetClassify.classifyCode}_${value.targetClassify.classifyOrder}`}>
-                        <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
-                          {/* <Icon name="shiweizhengfu_2" size={calc(24)} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} /> */}
+                {/* <View> */}
+                {targetList.map(
+                  (value, index) => (
+                    <TouchableOpacity style={styles.listItem} onPress={() => { this.pressTargetItem(index); }} key={`${value.targetClassify.classifyCode}_${value.targetClassify.classifyOrder}`}>
+                      <View style={[styles.listItem, currentFirstIndex === index ? { backgroundColor: '#45aeff' } : {}]}>
+                        {/* <Icon name="shiweizhengfu_2" size={calc(24)} color="#d36262" style={{ position: 'absolute', left: calc(20), top: calc(16) }} /> */}
 
-                          <Image
-                            source={ImageIconMap[value.targetClassify.classifyCode]}
-                            style={{
-                              width: calc(40), height: calc(40), position: 'absolute', left: calc(20), top: calc(10),
-                            }}
-                          />
-                          <Text style={{
-                            color: '#fff', fontSize: calc(24), lineHeight: calc(56), marginLeft: calc(70),
+                        <Image
+                          source={ImageIconMap[value.targetClassify.classifyCode]}
+                          style={{
+                            width: calc(40), height: calc(40), position: 'absolute', left: calc(20), top: calc(10),
                           }}
-                          >
-                            {value.targetClassify.classifyName}
-                          </Text>
-                          <Icon name="right" size={calc(20)} color="#fff" style={{ position: 'absolute', right: calc(16), top: calc(16) }} />
-                          <View style={styles.listItemDivider} />
-                        </View>
-                      </TouchableOpacity>
-                    ),
-                  )}
-                </View>
+                        />
+                        <Text style={{
+                          color: '#fff', fontSize: calc(24), lineHeight: calc(56), marginLeft: calc(70),
+                        }}
+                        >
+                          {value.targetClassify.classifyName}
+                        </Text>
+                        <Icon name="right" size={calc(20)} color="#fff" style={{ position: 'absolute', right: calc(16), top: calc(16) }} />
+                        <View style={styles.listItemDivider} />
+                      </View>
+                    </TouchableOpacity>
+                  ),
+                )}
+                {/* </View> */}
               </ScrollView>
             </View>
           </View>

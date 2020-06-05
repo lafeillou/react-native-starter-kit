@@ -26,6 +26,9 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
+    // borderWidth: 5,
+    // borderColor: 'red',
+    paddingBottom: calc(48),
   },
   headerIcon: {
     position: 'absolute',

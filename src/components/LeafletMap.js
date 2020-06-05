@@ -398,8 +398,8 @@ class LeafLetMap extends Component {
             this.setState({
               targetList: data,
             });
-            console.log('======================================================================');
-            console.log(1);
+            // console.log('======================================================================');
+            // console.log(1);
             // 发出指令，让h5显示所有的目标作为背景
             const json = {
               callback: 'window.Vue.$emit("dispatchAllGeoJsonDataAsBgToH5", {data: data.data})',
