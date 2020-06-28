@@ -15,6 +15,7 @@ import TargetObjectTabs from './TargetObjectTabs';
 
 import { sendCommandToRemote } from '../api/index';
 
+import NearbyForces from './NearbyForces';
 
 // import Lightbox from './BaseLightbox';
 
@@ -294,6 +295,7 @@ class TargetObject extends React.Component {
 
 
         <View style={{ flex: 1 }}>
+
           <TargetObjectTabs>
             <View style={{
               flex: 1,
@@ -301,6 +303,10 @@ class TargetObject extends React.Component {
             >
 
               <ScrollView style={{ flex: 1 }}>
+
+                {/* 范围查询兵力部署 */}
+                <NearbyForces />
+
                 {currentTarget.targetDesc && (
                 <Text style={{
                   color: '#fff', lineHeight: calc(20) * 1.5, paddingLeft: calc(20), paddingTop: calc(20), paddingRight: calc(20), paddingBottom: calc(20),

@@ -13,6 +13,7 @@ import {
 import PropTypes from 'prop-types';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import { connect } from 'react-redux';
+
 import { calc } from '../../lib/utils';
 
 import { sendCommandToRemote } from '../../api/index';
@@ -347,6 +348,7 @@ class TargetObjectTabs extends Component {
           ref={(scrollView) => { this._scrollView = scrollView; }}
           horizontal
           pagingEnabled
+          scrollEnabled={false}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this._onAnimationEnd}
         >
