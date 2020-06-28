@@ -125,15 +125,7 @@ class NearbyForces extends Component {
             目标点位经纬度
           </Text>
           <Text style={styles.headerText}>
-            经度：
-            {JSON.parse(this.props.currentTarget.targetLocation)[0].toFixed(2)}
-            {' '}
-            °E
-            {'         '}
-            纬度:
-            {JSON.parse(this.props.currentTarget.targetLocation)[1].toFixed(2)}
-            {' '}
-            °N
+            {`经度：${JSON.parse(this.props.currentTarget.targetLocation)[0].toFixed(2)} °E     纬度:${JSON.parse(this.props.currentTarget.targetLocation)[1].toFixed(2)}°N`}
           </Text>
         </View>
         <View style={styles.header}>
