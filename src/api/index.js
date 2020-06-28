@@ -64,3 +64,16 @@ export function loginOut(id) {
     url: `/logout/${id}`,
   });
 }
+
+/**
+ *
+ * 查询目标周边多少公里范围内的兵员列表
+ */
+
+export function getForceList(data) {
+  return axios({
+    method: 'post',
+    url: '/api/v1/sandtable_target/getSurroundingTargetInfo',
+    data,
+  });
+}

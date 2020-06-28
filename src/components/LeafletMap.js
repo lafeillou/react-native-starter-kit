@@ -228,7 +228,9 @@ class LeafLetMap extends Component {
           });
           break;
         case 'openRightTabs':
+          const { setCurrentTarget } = this.props;
           this.setCurrentFocusTarget({ ...params });
+          setCurrentTarget({ ...params });
           this.showTargetObjectPanel();
           // 发送远程指令
           sendCommandToRemote({
@@ -599,6 +601,7 @@ LeafLetMap.childContextTypes = {
 LeafLetMap.propTypes = {
   globalRemoteUrl: PropTypes.string,
   currentTarget: PropTypes.object,
+  setCurrentTarget: PropTypes.func,
 };
 
 LeafLetMap.defaultProps = {
@@ -614,7 +617,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-
+  setCurrentTarget: dispatch.app.setCurrentTarget,
 });
 
 

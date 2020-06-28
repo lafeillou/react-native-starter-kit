@@ -74,10 +74,14 @@ class ListItem extends Component {
         <TouchableOpacity onPress={this.toggleShow}>
           <View style={styles.header}>
             <View style={styles.hdLeft}>
-              <Text style={{ color: '#fff', lineHeight: calc(48) }}>张三</Text>
+              <Text style={{ color: '#fff', lineHeight: calc(48) }} numberOfLines={1}>{this.props.name}</Text>
             </View>
             <View style={styles.hdMid}>
-              <Text style={{ color: '#fff', lineHeight: calc(48) }}>隶属xxxxx点位</Text>
+              <Text style={{ color: '#fff', lineHeight: calc(48) }} numberOfLines={1}>
+                隶属
+                {this.props.targetName}
+                点位
+              </Text>
             </View>
             <View style={styles.hdRight}>
               <Icon2 name={opend ? 'ios-arrow-down' : 'ios-arrow-up'} size={calc(24)} color="#fff" style={{ color: '#fff', lineHeight: calc(48) }} />
@@ -87,10 +91,22 @@ class ListItem extends Component {
 
         {opend && (
         <View style={styles.content}>
-          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>组织岗位：岗位1</Text>
-          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>所在分队：分队1</Text>
-          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>家庭住址：南阳是邓州市XX街XX号</Text>
-          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>联系电话：123456789</Text>
+          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>
+            组织岗位：
+            {this.props.orgPost}
+          </Text>
+          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>
+            所在分队：
+            {this.props.contingentName}
+          </Text>
+          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>
+            家庭住址：
+            {this.props.homeAddress}
+          </Text>
+          <Text style={{ color: '#fff', lineHeight: calc(40), opacity: 0.5 }}>
+            联系电话：
+            {this.props.telephone}
+          </Text>
         </View>
         )}
       </View>

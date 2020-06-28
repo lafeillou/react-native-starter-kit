@@ -17,9 +17,9 @@ import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import Icon2 from 'yofc-react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { calc } from '../../lib/utils';
-import ListItem from './ListItem';
+import TargetItem from './TargetItem';
 
-import { sendCommandToRemote } from '../../api/index';
+import { sendCommandToRemote, getForceList } from '../../api/index';
 
 
 const styles = StyleSheet.create({
@@ -68,12 +68,42 @@ class NearbyForces extends Component {
     super(props);
     this.state = {
       forceRangePanelOpened: true,
+      // 当前范围值
+      currentRangeRadius: 0,
+      // 指定范围内兵员数据
+      targetsDataInRange: [],
     };
     this.toggleForceRangePanel = this.toggleForceRangePanel.bind(this);
+    this.onValueChangeHandle = this.onValueChangeHandle.bind(this);
+    this.onSlidingCompleteHandle = this.onSlidingCompleteHandle.bind(this);
   }
 
   componentDidMount() {
 
+  }
+
+  onValueChangeHandle($event) {
+    this.setState({
+      currentRangeRadius: $event,
+    });
+  }
+
+  onSlidingCompleteHandle($event) {
+    const { currentRangeRadius } = this.state;
+
+    console.log('=======================滑动结束==========');
+    console.log($event);
+    console.log(this.props.currentTarget);
+    getForceList({
+      targetId: this.props.currentTarget.id,
+      radius: currentRangeRadius,
+    }).then((res) => {
+      if (res.status === 200) {
+        this.setState({
+          targetsDataInRange: res.data.data,
+        });
+      }
+    });
   }
 
   toggleForceRangePanel() {
@@ -83,13 +113,37 @@ class NearbyForces extends Component {
     });
   }
 
+
   render() {
-    const { forceRangePanelOpened } = this.state;
+    const { forceRangePanelOpened, currentRangeRadius, targetsDataInRange } = this.state;
+
     return (
       <View style={styles.container}>
 
+        <View style={[styles.header, { marginBottom: calc(30) }]}>
+          <Text style={styles.headerText}>
+            目标点位经纬度
+          </Text>
+          <Text style={styles.headerText}>
+            经度：
+            {JSON.parse(this.props.currentTarget.targetLocation)[0].toFixed(2)}
+            {' '}
+            °E
+            {'         '}
+            纬度:
+            {JSON.parse(this.props.currentTarget.targetLocation)[1].toFixed(2)}
+            {' '}
+            °N
+          </Text>
+        </View>
         <View style={styles.header}>
-          <Text style={styles.headerText}>查询范围半径(km)</Text>
+
+          <Text style={styles.headerText}>
+            查询范围半径(
+            {currentRangeRadius}
+            km)
+            {' '}
+          </Text>
         </View>
 
         <View style={styles.sliderWrap}>
@@ -99,12 +153,14 @@ class NearbyForces extends Component {
 
           <View style={styles.middle}>
             <Slider
-
+              onValueChange={this.onValueChangeHandle}
+              onSlidingComplete={this.onSlidingCompleteHandle}
               minimumValue={0}
               maximumValue={100}
               minimumTrackTintColor="#0e2d61"
               maximumTrackTintColor="#ffffff"
               thumbTintColor="#ffffff"
+              step={5}
             />
           </View>
 
@@ -124,10 +180,7 @@ class NearbyForces extends Component {
 
           {forceRangePanelOpened && (
           <View style={{ flex: 1 }}>
-            <ListItem />
-            <ListItem />
-            <ListItem />
-            <ListItem />
+            {targetsDataInRange.filter((o) => o.troopsList.length > 0).map((o) => (<TargetItem {...o} />))}
           </View>
           )}
         </View>
@@ -137,14 +190,14 @@ class NearbyForces extends Component {
 }
 
 NearbyForces.propTypes = {
-
+  currentTarget: PropTypes.object,
 };
 
 
 // export default TargetObjectTabs;
 
 const mapStateToProps = (state) => ({
-  // currentTarget: state.app.currentTarget,
+  currentTarget: state.app.currentTarget,
 });
 
 const mapDispatchToProps = (dispatch) => ({
