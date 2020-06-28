@@ -74,6 +74,7 @@ axios.interceptors.response.use(
   },
   (error) => {
     console.log('错误信息：', error);
+    Actions.login();
     // Pass the response from the API, rather than a status code
     if (error && error.response && error.response.data) {
       throw error.response.data;
