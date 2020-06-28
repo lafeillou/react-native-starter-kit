@@ -2,7 +2,7 @@ import 'react-native-get-random-values';
 import React, { Component } from 'react';
 
 import {
-  StyleSheet, View, Dimensions, TouchableOpacity, ToastAndroid, TouchableWithoutFeedback,
+  StyleSheet, View, Dimensions, TouchableOpacity, ToastAndroid, TouchableWithoutFeedback, DeviceEventEmitter,
 } from 'react-native';
 
 import { Thumbnail, Button, Text } from 'native-base';
@@ -179,7 +179,13 @@ class LeafLetMap extends Component {
   }
 
   componentDidMount() {
+    this.listener = DeviceEventEmitter.addListener('drawCircleEvent', (data) => {
+      this.drawCircle(data);
+    });
+  }
 
+  componentWillUnmount() {
+    this.listener.remove();
   }
 
   /** *
@@ -379,6 +385,19 @@ class LeafLetMap extends Component {
       });
     }
 
+    drawCircle(data) {
+      const json = {
+        callback: 'window.Vue.$emit("drawCircle", {data: data.data})',
+        args: {
+          data: JSON.stringify(data),
+        },
+      };
+      console.log('==================在地图上画出指定公里数半径的圆圈========================');
+      console.log(data);
+      this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+    }
+
+
     webviewOnLoad() {
       const { webviewHasLoaded } = this.state;
 
@@ -437,8 +456,8 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.1.0` }}
-            // source={{ uri: 'http://10.90.132.40:8080?v=1.3.5' }}
+            // source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.1.1` }}
+            source={{ uri: 'http://10.90.131.214:8082/index.html?v=8222xxxxsssss3333xxssssssssxxxx1' }}
             onLoad={this.webviewOnLoad}
           />
           {/* 菜单按钮 */}

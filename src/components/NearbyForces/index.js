@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   PixelRatio,
   ToastAndroid,
+  DeviceEventEmitter,
 } from 'react-native';
 
 import Slider from '@react-native-community/slider';
@@ -76,6 +77,7 @@ class NearbyForces extends Component {
     this.toggleForceRangePanel = this.toggleForceRangePanel.bind(this);
     this.onValueChangeHandle = this.onValueChangeHandle.bind(this);
     this.onSlidingCompleteHandle = this.onSlidingCompleteHandle.bind(this);
+    this.drawCircle = this.drawCircle.bind(this);
   }
 
   componentDidMount() {
@@ -83,25 +85,36 @@ class NearbyForces extends Component {
   }
 
   onValueChangeHandle($event) {
+    const { currentTarget } = this.props;
     this.setState({
       currentRangeRadius: $event,
+    });
+
+    this.drawCircle({
+      targetLocation: JSON.parse(currentTarget.targetLocation),
+      radius: $event,
     });
   }
 
   onSlidingCompleteHandle($event) {
     const { currentRangeRadius } = this.state;
-
-    console.log('=======================滑动结束==========');
-    console.log($event);
-    console.log(this.props.currentTarget);
+    const { currentTarget } = this.props;
+    // console.log('=======================滑动结束==========');
+    // console.log($event);
+    // console.log(this.props.currentTarget);
     getForceList({
-      targetId: this.props.currentTarget.id,
+      targetId: currentTarget.id,
       radius: currentRangeRadius,
     }).then((res) => {
       if (res.status === 200) {
         this.setState({
           targetsDataInRange: res.data.data,
         });
+
+        // this.drawCircle({
+        //   targetLocation: JSON.parse(currentTarget.targetLocation),
+        //   radius: $event,
+        // });
       }
     });
   }
@@ -114,9 +127,13 @@ class NearbyForces extends Component {
   }
 
 
+  drawCircle(data) {
+    DeviceEventEmitter.emit('drawCircleEvent', data);
+  }
+
   render() {
     const { forceRangePanelOpened, currentRangeRadius, targetsDataInRange } = this.state;
-
+    const { currentTarget } = this.props;
     return (
       <View style={styles.container}>
 
@@ -125,16 +142,13 @@ class NearbyForces extends Component {
             目标点位经纬度
           </Text>
           <Text style={styles.headerText}>
-            {`经度：${JSON.parse(this.props.currentTarget.targetLocation)[0].toFixed(2)} °E     纬度:${JSON.parse(this.props.currentTarget.targetLocation)[1].toFixed(2)}°N`}
+            {`经度：${JSON.parse(currentTarget.targetLocation)[0].toFixed(2)} °E     纬度:${JSON.parse(currentTarget.targetLocation)[1].toFixed(2)}°N`}
           </Text>
         </View>
         <View style={styles.header}>
 
           <Text style={styles.headerText}>
-            查询范围半径(
-            {currentRangeRadius}
-            km)
-            {' '}
+            {`查询范围半径(${currentRangeRadius.toFixed(1)}km)`}
           </Text>
         </View>
 
@@ -148,16 +162,16 @@ class NearbyForces extends Component {
               onValueChange={this.onValueChangeHandle}
               onSlidingComplete={this.onSlidingCompleteHandle}
               minimumValue={0}
-              maximumValue={100}
+              maximumValue={10}
               minimumTrackTintColor="#0e2d61"
               maximumTrackTintColor="#ffffff"
               thumbTintColor="#ffffff"
-              step={5}
+              step={0.1}
             />
           </View>
 
           <View style={styles.rightText}>
-            <Text style={{ color: '#fff' }}>100</Text>
+            <Text style={{ color: '#fff' }}>10</Text>
           </View>
 
         </View>
@@ -172,7 +186,7 @@ class NearbyForces extends Component {
 
           {forceRangePanelOpened && (
           <View style={{ flex: 1 }}>
-            {targetsDataInRange.filter((o) => o.troopsList.length > 0).map((o) => (<TargetItem {...o} />))}
+            {targetsDataInRange.filter((o) => o.troopsList.length > 0).map((o) => (<TargetItem key={o.id} {...o} />))}
           </View>
           )}
         </View>
@@ -183,6 +197,7 @@ class NearbyForces extends Component {
 
 NearbyForces.propTypes = {
   currentTarget: PropTypes.object,
+  webref: PropTypes.object,
 };
 
 
@@ -190,6 +205,7 @@ NearbyForces.propTypes = {
 
 const mapStateToProps = (state) => ({
   currentTarget: state.app.currentTarget,
+  webref: state.app.webref,
 });
 
 const mapDispatchToProps = (dispatch) => ({

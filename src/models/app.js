@@ -2,6 +2,8 @@
 export default {
   namespace: 'app',
   state: {
+    // webview全局引用
+    webref: null,
     globalRemoteUrl: '',
     currentTarget: {
       id: '',
@@ -53,6 +55,12 @@ export default {
    * Reducers
    */
   reducers: {
+    setWebbref(state, payload) {
+      return {
+        ...state,
+        webref: payload,
+      };
+    },
     setUserInfo(state, payload) {
       return {
         ...state,

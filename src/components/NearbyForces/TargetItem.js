@@ -48,7 +48,7 @@ class TargetItem extends Component {
       <View style={styles.container}>
 
         {troopsList.map((o) => (
-          <ListItem {...this.props} {...o} />
+          <ListItem key={o.id} {...this.props} {...o} />
         ))}
 
       </View>
