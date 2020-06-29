@@ -115,6 +115,24 @@ class NearbyForces extends Component {
         //   targetLocation: JSON.parse(currentTarget.targetLocation),
         //   radius: $event,
         // });
+        // 发送远程指令
+        sendCommandToRemote({
+          targetId: currentTarget.id,
+          eventSource: 'PAD',
+          eventType: 'OBJECT',
+          eventAction: 'DRAWCIRCLE',
+          eventAttachmentUrl: JSON.stringify({ radius: currentRangeRadius * 1000 }),
+        }).then((res) => {
+          // console.log('=============指令调用结果==================');
+          // console.log(res);
+          if (res.status === 200) {
+            ToastAndroid.showWithGravity(
+              res.data.message,
+              ToastAndroid.SHORT,
+              ToastAndroid.TOP,
+            );
+          }
+        });
       }
     });
   }

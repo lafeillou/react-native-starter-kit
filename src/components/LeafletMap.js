@@ -197,7 +197,7 @@ class LeafLetMap extends Component {
         return;
       }
       const { type, params, callback } = data;
-
+      const { setCurrentTarget } = this.props;
       const json = {
         callback,
         args: params,
@@ -234,7 +234,6 @@ class LeafLetMap extends Component {
           });
           break;
         case 'openRightTabs':
-          const { setCurrentTarget } = this.props;
           this.setCurrentFocusTarget({ ...params });
           setCurrentTarget({ ...params });
           this.showTargetObjectPanel();
@@ -334,6 +333,7 @@ class LeafLetMap extends Component {
 
     // 切换地图图层
     switchLayer(name) {
+      const { currentTarget } = this.props;
       const json = {
         callback: 'window.Vue.$emit("switchLayer", {name: data.name})',
         args: {
@@ -342,6 +342,25 @@ class LeafLetMap extends Component {
       };
       this.setState({ currentLayerName: name });
       this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+
+      // 发送远程指令
+      sendCommandToRemote({
+        targetId: currentTarget.id,
+        eventSource: 'PAD',
+        eventType: 'OBJECT',
+        eventAction: 'SWITCHLAYER',
+        eventAttachmentUrl: JSON.stringify({ layerName: name }),
+      }).then((res) => {
+        // console.log('=============指令调用结果==================');
+        // console.log(res);
+        if (res.status === 200) {
+          ToastAndroid.showWithGravity(
+            res.data.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }
+      });
     }
 
 
@@ -456,8 +475,8 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            // source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.1.1` }}
-            source={{ uri: 'http://10.90.131.214:8082/index.html?v=8222xxxxsssss3333xxssssssssxxxx1' }}
+            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.1.13` }}
+            // source={{ uri: 'http://10.90.131.214:8082/index.html?v=8222xxxxsssss3333xxssssssssxxxx1' }}
             onLoad={this.webviewOnLoad}
           />
           {/* 菜单按钮 */}
