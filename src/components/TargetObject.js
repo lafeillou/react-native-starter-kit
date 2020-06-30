@@ -307,14 +307,14 @@ class TargetObject extends React.Component {
                 {/* 范围查询兵力部署 */}
                 <NearbyForces />
 
-                {currentTarget.targetDesc && (
+                {/* {currentTarget.targetDesc && (
                 <Text style={{
                   color: '#fff', lineHeight: calc(20) * 1.5, paddingLeft: calc(20), paddingTop: calc(20), paddingRight: calc(20), paddingBottom: calc(20),
                 }}
                 >
                   {currentTarget.targetDesc}
                 </Text>
-                )}
+                )} */}
               </ScrollView>
             </View>
             <View style={{ flex: 1, backgroundColor: 'red' }}>

@@ -197,7 +197,8 @@ class LeafLetMap extends Component {
         return;
       }
       const { type, params, callback } = data;
-      const { setCurrentTarget } = this.props;
+      const { setCurrentTarget, currentTarget } = this.props;
+
       const json = {
         callback,
         args: params,
@@ -234,9 +235,18 @@ class LeafLetMap extends Component {
           });
           break;
         case 'openRightTabs':
+
+
           this.setCurrentFocusTarget({ ...params });
           setCurrentTarget({ ...params });
           this.showTargetObjectPanel();
+
+          // 设置当前的目标范围 为0
+          this.drawCircle({
+            targetLocation: JSON.parse(currentTarget.targetLocation),
+            radius: 0,
+          });
+
           // 发送远程指令
           sendCommandToRemote({
             targetId: params.id,
@@ -365,6 +375,7 @@ class LeafLetMap extends Component {
 
 
     dispatchGeoJsonDataToH5(data) {
+      const { currentTarget } = this.props;
       // console.log(data);
       const json = {
         callback: 'window.Vue.$emit("dispatchGeoJsonDataToH5", {data: data.data})',
@@ -374,6 +385,12 @@ class LeafLetMap extends Component {
       };
 
       this.webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
+
+      // 设置当前的目标范围 为0
+      this.drawCircle({
+        targetLocation: JSON.parse(currentTarget.targetLocation),
+        radius: 0,
+      });
     }
 
     focusToPoint() {
@@ -495,11 +512,11 @@ class LeafLetMap extends Component {
           {/* 右下角四个按钮 对应 搜索、放大、缩小、定位当前位置 */}
           <View style={styles.btnListWrap}>
 
-            <TouchableOpacity style={[styles.btn, styles.flex0]}>
+            {/* <TouchableOpacity style={[styles.btn, styles.flex0]}>
               <View style={[styles.btn, styles.flex0]}>
                 <Icon name="search" size={calc(24)} color="white" />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
 
             <TouchableOpacity style={[styles.btn, styles.flex0]} onPress={this.zoomIn}>
@@ -514,11 +531,11 @@ class LeafLetMap extends Component {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.btn, styles.flex0]}>
+            {/* <TouchableOpacity style={[styles.btn, styles.flex0]}>
               <View style={[styles.btn, styles.flex0]}>
                 <Icon name="aim" size={calc(24)} color="white" />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* 顶部连接状态反馈 */}

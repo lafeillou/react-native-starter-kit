@@ -82,6 +82,7 @@ class TargetSubPanel extends Component {
     this.switchFirstSwitchValue = this.switchFirstSwitchValue.bind(this);
     this.closeThisPanel = this.closeThisPanel.bind(this);
     this.dispatchGeoJsonDataToH5 = this.dispatchGeoJsonDataToH5.bind(this);
+    this.drawCircle = this.drawCircle.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -224,6 +225,24 @@ class TargetSubPanel extends Component {
     webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
     // 设置当前聚焦的点
     setCurrentFocusTarget(data);
+    // 设置当前的目标范围 为0
+    this.drawCircle({
+      targetLocation: JSON.parse(data.targetLocation),
+      radius: 0,
+    });
+  }
+
+  drawCircle(data) {
+    const { webref } = this.context;
+    const json = {
+      callback: 'window.Vue.$emit("drawCircle", {data: data.data})',
+      args: {
+        data: JSON.stringify(data),
+      },
+    };
+    console.log('==================在地图上画出指定公里数半径的圆圈========================');
+    // console.log(data);
+    webref.injectJavaScript(`webviewCallback(${JSON.stringify(json)})`);
   }
 
   render() {

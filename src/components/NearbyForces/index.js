@@ -155,12 +155,12 @@ class NearbyForces extends Component {
     return (
       <View style={styles.container}>
 
-        <View style={[styles.header, { marginBottom: calc(30) }]}>
-          <Text style={styles.headerText}>
+        <View style={[styles.header, { marginBottom: calc(10) }]}>
+          {/* <Text style={styles.headerText}>
             目标点位经纬度
-          </Text>
+          </Text> */}
           <Text style={styles.headerText}>
-            {`经度：${JSON.parse(currentTarget.targetLocation)[0].toFixed(2)} °E     纬度:${JSON.parse(currentTarget.targetLocation)[1].toFixed(2)}°N`}
+            {`经度：${JSON.parse(currentTarget.targetLocation)[0]} °E     纬度:${JSON.parse(currentTarget.targetLocation)[1]}°N`}
           </Text>
         </View>
         <View style={styles.header}>
@@ -198,7 +198,7 @@ class NearbyForces extends Component {
           <TouchableOpacity onPress={this.toggleForceRangePanel}>
             <View style={styles.contentViewHd}>
               <Text style={{ color: '#fff', lineHeight: calc(40), marginLeft: calc(20) }}>查询范围内兵力详情</Text>
-              <Icon2 name={forceRangePanelOpened ? 'ios-arrow-down' : 'ios-arrow-up'} size={calc(24)} color="#fff" style={{ position: 'absolute', right: calc(20), top: calc(12) }} />
+              <Icon2 name={forceRangePanelOpened ? 'ios-arrow-up' : 'ios-arrow-down'} size={calc(24)} color="#fff" style={{ position: 'absolute', right: calc(20), top: calc(12) }} />
             </View>
           </TouchableOpacity>
 

@@ -84,7 +84,7 @@ class ListItem extends Component {
               </Text>
             </View>
             <View style={styles.hdRight}>
-              <Icon2 name={opend ? 'ios-arrow-down' : 'ios-arrow-up'} size={calc(24)} color="#fff" style={{ color: '#fff', lineHeight: calc(48) }} />
+              <Icon2 name={opend ? 'ios-arrow-up' : 'ios-arrow-down'} size={calc(24)} color="#fff" style={{ color: '#fff', lineHeight: calc(48) }} />
             </View>
           </View>
         </TouchableOpacity>

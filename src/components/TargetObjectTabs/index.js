@@ -20,7 +20,7 @@ import { sendCommandToRemote } from '../../api/index';
 
 const tabW = calc(460) / 3.0;
 const tabMargin = 0;
-const tabItemArr = [{ title: '文字', icon: 'font-size' }, { title: '图片', icon: 'image' }, { title: '视频', icon: 'play-circle' }];
+const tabItemArr = [{ title: '附近兵员', icon: 'font-size' }, { title: '图片', icon: 'image' }, { title: '视频', icon: 'play-circle' }];
 const WIDTH = calc(460);
 const maxW = (tabW + tabMargin) * tabItemArr.length;
 
