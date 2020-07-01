@@ -83,7 +83,7 @@ class NearbyForces extends Component {
   }
 
   componentDidMount() {
-
+    this.onSlidingCompleteHandle();
   }
 
   onValueChangeHandle($event) {
