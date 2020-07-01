@@ -17,11 +17,11 @@ import PropTypes from 'prop-types';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import Icon2 from 'yofc-react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { calc } from '../../lib/utils';
 import TargetItem from './TargetItem';
 
 import { sendCommandToRemote, getForceList } from '../../api/index';
-
 
 const styles = StyleSheet.create({
   container: {
@@ -73,6 +73,8 @@ class NearbyForces extends Component {
       currentRangeRadius: 0,
       // 指定范围内兵员数据
       targetsDataInRange: [],
+      // 当前人员总人数
+      forceNum: 0,
     };
     this.toggleForceRangePanel = this.toggleForceRangePanel.bind(this);
     this.onValueChangeHandle = this.onValueChangeHandle.bind(this);
@@ -111,6 +113,18 @@ class NearbyForces extends Component {
           targetsDataInRange: res.data.data,
         });
 
+        let { forceNum } = this.state;
+
+        // 统计当前人数
+        _.forEach(res.data.data, (o) => {
+          if (o.troopsList > 0) {
+            forceNum += o.troopsList.length;
+          }
+        });
+
+        this.setState({
+          forceNum,
+        });
         // this.drawCircle({
         //   targetLocation: JSON.parse(currentTarget.targetLocation),
         //   radius: $event,
@@ -150,7 +164,9 @@ class NearbyForces extends Component {
   }
 
   render() {
-    const { forceRangePanelOpened, currentRangeRadius, targetsDataInRange } = this.state;
+    const {
+      forceRangePanelOpened, currentRangeRadius, targetsDataInRange, forceNum,
+    } = this.state;
     const { currentTarget } = this.props;
     return (
       <View style={styles.container}>
@@ -197,7 +213,11 @@ class NearbyForces extends Component {
         <View style={styles.contentView}>
           <TouchableOpacity onPress={this.toggleForceRangePanel}>
             <View style={styles.contentViewHd}>
-              <Text style={{ color: '#fff', lineHeight: calc(40), marginLeft: calc(20) }}>查询范围内兵力详情</Text>
+              <Text style={{ color: '#fff', lineHeight: calc(40), marginLeft: calc(20) }}>
+                查询范围内兵力详情(共
+                {forceNum}
+                人)
+              </Text>
               <Icon2 name={forceRangePanelOpened ? 'ios-arrow-up' : 'ios-arrow-down'} size={calc(24)} color="#fff" style={{ position: 'absolute', right: calc(20), top: calc(12) }} />
             </View>
           </TouchableOpacity>
