@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import Icon from 'yofc-react-native-vector-icons/Iconfont';
 import Icon2 from 'yofc-react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+// import _ from 'lodash';
 import { calc } from '../../lib/utils';
 import TargetItem from './TargetItem';
 
@@ -113,11 +113,10 @@ class NearbyForces extends Component {
           targetsDataInRange: res.data.data,
         });
 
-        let { forceNum } = this.state;
-
+        let forceNum = 0;
         // 统计当前人数
-        _.forEach(res.data.data, (o) => {
-          if (o.troopsList > 0) {
+        res.data.data.forEach((o) => {
+          if (o.troopsList.length > 0) {
             forceNum += o.troopsList.length;
           }
         });

@@ -439,8 +439,8 @@ class LeafLetMap extends Component {
 
       if (!webviewHasLoaded) {
         getTargetTreeList({
-          queryAreaType: 'DISTRICT',
-          queryAreaName: '邓州市',
+          queryAreaType: 'CITY',
+          queryAreaName: '鹤壁市',
           keyword: '',
         }).then((res) => {
           // console.log(res);

@@ -25,6 +25,8 @@ const XZ = require('../../assets/images/XZ.png');
 // 水库
 const SK = require('../../assets/images/SK.png');
 
+// 区县
+const QX = require('../../assets/images/SZF.png');
 
 export default {
   GD,
@@ -39,4 +41,5 @@ export default {
   SZF,
   XZ,
   SK,
+  QX
 };
