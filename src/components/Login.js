@@ -41,9 +41,9 @@ class Login extends React.Component {
     super(props);
 
     this.state = {
-      userName: 'mrbird',
-      userPwd: '1234qwer',
-      remoteIp: '192.168.8.154',
+      userName: 'sandtable',
+      userPwd: 'sandtable',
+      remoteIp: '192.168.8.91',
       // remoteIp: '111.47.10.117:30024',
       showRemoteIp: false,
     };
