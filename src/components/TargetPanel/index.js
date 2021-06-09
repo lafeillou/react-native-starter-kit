@@ -106,7 +106,7 @@ export default class TargetPanel extends Component {
   componentDidMount() {
     getTargetTreeList({
       queryAreaType: 'CITY',
-      queryAreaName: '鹤壁市',
+      queryAreaName: '周口市',
       keyword: '',
     }).then((res) => {
       // console.log(res);

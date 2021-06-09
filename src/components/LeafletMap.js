@@ -440,7 +440,7 @@ class LeafLetMap extends Component {
       if (!webviewHasLoaded) {
         getTargetTreeList({
           queryAreaType: 'CITY',
-          queryAreaName: '鹤壁市',
+          queryAreaName: '周口市',
           keyword: '',
         }).then((res) => {
           // console.log(res);
@@ -492,7 +492,8 @@ class LeafLetMap extends Component {
             ref={(r) => { this.webref = r; }}
             injectedJavaScript={patchPostMessageJsCode}
             style={{ backgroundColor: '#0c132c' }}
-            source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.1.13` }}
+            //source={{ uri: `http://${globalRemoteUrl}/webview_map/index.html?v=1.1.13` }}
+            source={{ uri: `http://10.90.133.186:8080/index.html?v=1.1.14`}}
             // source={{ uri: 'http://10.90.131.214:8082/index.html?v=8222xxxxsssss3333xxssssssssxxxx1' }}
             onLoad={this.webviewOnLoad}
           />
